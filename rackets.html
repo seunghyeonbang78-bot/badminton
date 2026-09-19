@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Rackets — RacketLab</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+<header class="navbar">
+
+    <a href="index.html" class="logo">
+        RacketLab
+    </a>
+
+    <nav>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="rackets.html" class="active">
+            Rackets
+        </a>
+
+        <a href="compare.html">
+            Compare
+        </a>
+
+        <a href="brands.html">
+            Brands
+        </a>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+    <section class="page-header">
+
+        <p class="eyebrow">
+            RACKET DATABASE
+        </p>
+
+        <h1>
+            All Rackets
+        </h1>
+
+        <p>
+            Explore and compare high-end badminton rackets.
+        </p>
+
+    </section>
+
+
+    <section class="explorer">
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search racket, brand, or series..."
+            >
+
+        </div>
+
+
+        <div class="filters">
+
+            <button class="filter-button active" data-brand="all">
+                All
+            </button>
+
+            <button class="filter-button" data-brand="Yonex">
+                Yonex
+            </button>
+
+            <button class="filter-button" data-brand="Victor">
+                Victor
+            </button>
+
+        </div>
+
+
+        <div class="explorer-top">
+
+            <p id="racket-count">
+                0 rackets
+            </p>
+
+            <select id="sort-select">
+
+                <option value="default">
+                    Sort
+                </option>
+
+                <option value="smash">
+                    Smash Power
+                </option>
+
+                <option value="control">
+                    Control
+                </option>
+
+                <option value="defense">
+                    Defense
+                </option>
+
+                <option value="stability">
+                    Stability
+                </option>
+
+                <option value="newest">
+                    Newest
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            id="racket-grid"
+            class="racket-grid"
+        ></div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div class="footer-logo">
+        RacketLab
+    </div>
+
+    <p>
+        Badminton racket database & comparison tool.
+    </p>
+
+</footer>
+
+
+<script type="module" src="data/index.js"></script>
+<script type="module" src="js/rackets-page.js"></script>
+
+</body>
+</html>
