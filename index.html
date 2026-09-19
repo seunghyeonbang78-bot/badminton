@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>RacketLab — Badminton Racket Database</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <header class="navbar">
+
+        <div class="nav-container">
+
+            <a href="#" class="logo">
+                RACKET<span>LAB</span>
+            </a>
+
+            <nav class="nav-links">
+
+                <a href="#explore">Explore</a>
+                <a href="#compare">Compare</a>
+                <a href="#brands">Brands</a>
+
+            </nav>
+
+            <button
+                class="mobile-menu-button"
+                onclick="toggleMobileMenu()"
+            >
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         HERO
+    ========================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    BADMINTON RACKET DATABASE
+                </div>
+
+                <h1>
+                    Find the racket<br>
+                    that fits your game.
+                </h1>
+
+                <p>
+                    Explore and compare high-level Yonex and Victor
+                    badminton rackets by power, speed, control,
+                    stability and feel.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <button
+                        class="button primary"
+                        onclick="scrollToExplorer()"
+                    >
+                        Explore Rackets
+                    </button>
+
+                    <button
+                        class="button secondary"
+                        onclick="scrollToCompare()"
+                    >
+                        Compare
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="hero-stat">
+
+                <div class="stat-number">
+                    01
+                </div>
+
+                <div class="stat-label">
+                    RACKET DATABASE
+                </div>
+
+                <div class="stat-line"></div>
+
+                <p>
+                    Compare rackets by playing
+                    characteristics instead of
+                    just specifications.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             FEATURED
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-header">
+
+                <div>
+                    <span class="section-number">
+                        01
+                    </span>
+
+                    <h2>
+                        Featured Rackets
+                    </h2>
+                </div>
+
+                <p>
+                    Explore selected high-level
+                    badminton rackets.
+                </p>
+
+            </div>
+
+            <div
+                id="featured-rackets"
+                class="racket-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             EXPLORE
+        ========================== -->
+
+        <section
+            id="explore"
+            class="section explorer-section"
+        >
+
+            <div class="section-header">
+
+                <div>
+                    <span class="section-number">
+                        02
+                    </span>
+
+                    <h2>
+                        Racket Explorer
+                    </h2>
+                </div>
+
+                <p>
+                    Search, filter and sort
+                    the database.
+                </p>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <input
+                    id="search-input"
+                    type="text"
+                    placeholder="Search racket, brand, series or characteristic..."
+                    oninput="renderRackets()"
+                >
+
+                <span>
+                    /
+                </span>
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="filters">
+
+                <div class="filter-group">
+
+                    <label>
+                        Brand
+                    </label>
+
+                    <select
+                        id="brand-filter"
+                        onchange="renderRackets()"
+                    >
+
+                        <option value="all">
+                            All Brands
+                        </option>
+
+                        <option value="Yonex">
+                            Yonex
+                        </option>
+
+                        <option value="Victor">
+                            Victor
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Balance
+                    </label>
+
+                    <select
+                        id="balance-filter"
+                        onchange="renderRackets()"
+                    >
+
+                        <option value="all">
+                            All
+                        </option>
+
+                        <option value="Head Heavy">
+                            Head Heavy
+                        </option>
+
+                        <option value="Even Balance">
+                            Even Balance
+                        </option>
+
+                        <option value="Head Light">
+                            Head Light
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Style
+                    </label>
+
+                    <select
+                        id="style-filter"
+                        onchange="renderRackets()"
+                    >
+
+                        <option value="all">
+                            All Styles
+                        </option>
+
+                        <option value="Power">
+                            Power
+                        </option>
+
+                        <option value="Speed">
+                            Speed
+                        </option>
+
+                        <option value="Control">
+                            Control
+                        </option>
+
+                        <option value="All-round">
+                            All-round
+                        </option>
+
+                        <option value="Stability">
+                            Stability
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="filter-group">
+
+                    <label>
+                        Sort
+                    </label>
+
+                    <select
+                        id="sort-filter"
+                        onchange="renderRackets()"
+                    >
+
+                        <option value="default">
+                            Default
+                        </option>
+
+                        <option value="smash">
+                            Highest Smash
+                        </option>
+
+                        <option value="control">
+                            Highest Control
+                        </option>
+
+                        <option value="defense">
+                            Highest Defense
+                        </option>
+
+                        <option value="stability">
+                            Highest Stability
+                        </option>
+
+                        <option value="speed">
+                            Fastest Swing
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- RESULTS -->
+
+            <div class="results-header">
+
+                <span id="result-count">
+                    0 rackets
+                </span>
+
+                <button
+                    onclick="clearFilters()"
+                    class="clear-button"
+                >
+                    Clear filters
+                </button>
+
+            </div>
+
+
+            <div
+                id="racket-list"
+                class="racket-grid"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             COMPARE
+        ========================== -->
+
+        <section
+            id="compare"
+            class="section compare-section"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-number">
+                        03
+                    </span>
+
+                    <h2>
+                        Compare Rackets
+                    </h2>
+
+                </div>
+
+                <p>
+                    Select up to four rackets.
+                </p>
+
+            </div>
+
+
+            <div
+                id="compare-selection"
+                class="compare-selection"
+            ></div>
+
+
+            <div
+                id="comparison-table"
+                class="comparison-table"
+            ></div>
+
+        </section>
+
+
+        <!-- =========================
+             BRANDS
+        ========================== -->
+
+        <section
+            id="brands"
+            class="section brands-section"
+        >
+
+            <div class="section-header">
+
+                <div>
+
+                    <span class="section-number">
+                        04
+                    </span>
+
+                    <h2>
+                        Brands
+                    </h2>
+
+                </div>
+
+                <p>
+                    Explore leading badminton
+                    racket manufacturers.
+                </p>
+
+            </div>
+
+
+            <div class="brand-grid">
+
+                <div class="brand-card">
+
+                    <div class="brand-logo">
+                        YONEX
+                    </div>
+
+                    <span>
+                        Japan
+                    </span>
+
+                </div>
+
+
+                <div class="brand-card">
+
+                    <div class="brand-logo">
+                        VICTOR
+                    </div>
+
+                    <span>
+                        Taiwan
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div class="footer-container">
+
+            <div class="logo">
+                RACKET<span>LAB</span>
+            </div>
+
+            <p>
+                Badminton racket database & comparison tool.
+            </p>
+
+            <span>
+                © 2026 RacketLab
+            </span>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================
+         MODAL
+    ========================== -->
+
+    <div
+        id="racket-modal"
+        class="modal hidden"
+    >
+
+        <div class="modal-overlay"
+             onclick="closeModal()">
+        </div>
+
+        <div class="modal-content">
+
+            <button
+                class="modal-close"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
+
+            <div id="modal-body"></div>
+
+        </div>
+
+    </div>
+
+
+    <script src="data/rackets.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
