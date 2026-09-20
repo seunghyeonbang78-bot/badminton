@@ -795,19 +795,24 @@ footer {
     fill: #111;
 }
 
+.radar-0 {
+    stroke: #2563eb;
+    fill: #2563eb;
+}
+
 .radar-1 {
-    stroke: #666;
-    fill: #666;
+    stroke: #ef4444;
+    fill: #ef4444;
 }
 
 .radar-2 {
-    stroke: #999;
-    fill: #999;
+    stroke: #16a34a;
+    fill: #16a34a;
 }
 
 .radar-3 {
-    stroke: #bbb;
-    fill: #bbb;
+    stroke: #9333ea;
+    fill: #9333ea;
 }
 
 .radar-legend {
@@ -834,19 +839,19 @@ footer {
 }
 
 .legend-0 {
-    background: #111;
+    background: #2563eb;
 }
 
 .legend-1 {
-    background: #666;
+    background: #ef4444;
 }
 
 .legend-2 {
-    background: #999;
+    background: #16a34a;
 }
 
 .legend-3 {
-    background: #bbb;
+    background: #9333ea;
 }
 
 .comparison-table-wrapper {
