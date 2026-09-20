@@ -1,22 +1,25 @@
 import { rackets } from "../data/index.js";
 
 
+/* =====================================================
+   SETTINGS
+===================================================== */
+
 const MAX_SELECTION = 4;
 
-let selectedRackets = [];
 
-let currentBrand = "All";
+/*
+    Exactly 7 axes.
 
-
-/* =====================================================
-   RADAR AXES
-===================================================== */
+    The values come from:
+    racket.characteristics
+*/
 
 const radarAxes = [
 
     {
         key: "smashPower",
-        label: "Smash Power"
+        label: "Smash"
     },
 
     {
@@ -52,11 +55,32 @@ const radarAxes = [
 ];
 
 
-/* =====================================================
-   SPEC ROWS
-===================================================== */
+/*
+    Detailed characteristics table
+*/
 
-const specifications = [
+const characteristicRows = [
+
+    ["Head Heavy", "headHeavy"],
+    ["Smash Power", "smashPower"],
+    ["Swing Speed", "swingSpeed"],
+    ["Defense", "defense"],
+    ["Control", "control"],
+    ["Repulsion", "repulsion"],
+    ["Stability", "stability"],
+    ["Maneuverability", "maneuverability"],
+    ["Holding", "holding"],
+    ["Touch", "touch"],
+    ["Precision", "precision"]
+
+];
+
+
+/*
+    Official specifications table
+*/
+
+const specificationRows = [
 
     ["Weight", "weight"],
     ["Grip", "grip"],
@@ -71,50 +95,9 @@ const specifications = [
 ];
 
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const searchInput =
-    document.getElementById("compare-search");
-
-const selector =
-    document.getElementById("racket-selector");
-
-const selectedContainer =
-    document.getElementById("selected-rackets");
-
-const selectionCount =
-    document.getElementById("selection-count");
-
-const comparisonArea =
-    document.getElementById("comparison-area");
-
-const specSection =
-    document.getElementById("spec-section");
-
-const emptyState =
-    document.getElementById("compare-empty");
-
-const radarCanvas =
-    document.getElementById("radar-chart");
-
-const radarLegend =
-    document.getElementById("radar-legend");
-
-const specHead =
-    document.getElementById("spec-head");
-
-const specBody =
-    document.getElementById("spec-body");
-
-const filterButtons =
-    document.querySelectorAll(".compare-filter");
-
-
-/* =====================================================
-   COLORS
-===================================================== */
+/*
+    One color per selected racket.
+*/
 
 const racketColors = [
 
@@ -127,7 +110,98 @@ const racketColors = [
 
 
 /* =====================================================
-   INITIALIZE
+   STATE
+===================================================== */
+
+let selectedRackets = [];
+
+let currentBrand = "All";
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const searchInput =
+    document.getElementById(
+        "compare-search"
+    );
+
+
+const selector =
+    document.getElementById(
+        "racket-selector"
+    );
+
+
+const selectedContainer =
+    document.getElementById(
+        "selected-rackets"
+    );
+
+
+const selectionCount =
+    document.getElementById(
+        "selection-count"
+    );
+
+
+const comparisonArea =
+    document.getElementById(
+        "comparison-area"
+    );
+
+
+const emptyState =
+    document.getElementById(
+        "compare-empty"
+    );
+
+
+const radarCanvas =
+    document.getElementById(
+        "radar-chart"
+    );
+
+
+const radarLegend =
+    document.getElementById(
+        "radar-legend"
+    );
+
+
+const characteristicHead =
+    document.getElementById(
+        "characteristic-head"
+    );
+
+
+const characteristicBody =
+    document.getElementById(
+        "characteristic-body"
+    );
+
+
+const specHead =
+    document.getElementById(
+        "spec-head"
+    );
+
+
+const specBody =
+    document.getElementById(
+        "spec-body"
+    );
+
+
+const filterButtons =
+    document.querySelectorAll(
+        ".compare-filter"
+    );
+
+
+/* =====================================================
+   START
 ===================================================== */
 
 renderSelector();
@@ -143,44 +217,56 @@ updateComparison();
 
 searchInput.addEventListener(
     "input",
-    renderSelector
+    () => {
+
+        renderSelector();
+
+    }
 );
 
 
 /* =====================================================
-   FILTER
+   BRAND FILTER
 ===================================================== */
 
-filterButtons.forEach(button => {
+filterButtons.forEach(
+    button => {
 
-    button.addEventListener(
-        "click",
-        () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-            currentBrand =
-                button.dataset.brand;
+                currentBrand =
+                    button.dataset.brand;
 
-            filterButtons.forEach(
-                item =>
-                    item.classList.remove(
-                        "active"
-                    )
-            );
 
-            button.classList.add(
-                "active"
-            );
+                filterButtons.forEach(
+                    item => {
 
-            renderSelector();
+                        item.classList.remove(
+                            "active"
+                        );
 
-        }
-    );
+                    }
+                );
 
-});
+
+                button.classList.add(
+                    "active"
+                );
+
+
+                renderSelector();
+
+            }
+        );
+
+    }
+);
 
 
 /* =====================================================
-   SELECTOR
+   RENDER RACKET SELECTOR
 ===================================================== */
 
 function renderSelector() {
@@ -240,13 +326,16 @@ function renderSelector() {
 
         selector.innerHTML = `
 
-            <div style="
-                grid-column:1/-1;
-                padding:30px;
-                text-align:center;
-                color:#6b7280;
-            ">
-                No rackets found.
+            <div class="no-results">
+
+                <strong>
+                    No rackets found
+                </strong>
+
+                <p>
+                    Try another search or brand.
+                </p>
+
             </div>
 
         `;
@@ -258,28 +347,29 @@ function renderSelector() {
     filtered.forEach(
         racket => {
 
-            const selected =
+            const isSelected =
                 selectedRackets.some(
-                    item =>
-                        item.id === racket.id
+                    selected =>
+                        selected.id === racket.id
                 );
 
 
-            const button =
+            const card =
                 document.createElement(
                     "button"
                 );
 
 
-            button.type = "button";
+            card.type = "button";
 
-            button.className =
+
+            card.className =
                 "selector-list-item";
 
 
-            if (selected) {
+            if (isSelected) {
 
-                button.classList.add(
+                card.classList.add(
                     "selected"
                 );
 
@@ -290,12 +380,14 @@ function renderSelector() {
                 racket.officialSpecs || {};
 
 
-            button.innerHTML = `
+            card.innerHTML = `
 
                 <div class="selector-list-image">
 
                     <img
-                        src="${racket.image || ""}"
+                        src="${safeAttribute(
+                            racket.image
+                        )}"
                         alt="${escapeHTML(
                             racket.model
                         )}"
@@ -307,29 +399,40 @@ function renderSelector() {
                 <div class="selector-list-info">
 
                     <span class="selector-brand">
+
                         ${escapeHTML(
-                            racket.brand || ""
+                            racket.brand
                         )}
+
                     </span>
 
+
                     <strong>
+
                         ${escapeHTML(
-                            racket.model || ""
+                            racket.model
                         )}
+
                     </strong>
+
 
                     <div class="selector-meta">
 
                         <span>
-                            ${escapeHTML(
-                                specs.weight || "—"
-                            )}
-                        </span>
 
-                        <span>
                             ${escapeHTML(
                                 specs.balance || "—"
                             )}
+
+                        </span>
+
+
+                        <span>
+
+                            ${escapeHTML(
+                                specs.weight || "—"
+                            )}
+
                         </span>
 
                     </div>
@@ -339,21 +442,28 @@ function renderSelector() {
 
                 <div class="selector-add">
 
-                    ${selected ? "✓" : "+"}
+                    ${isSelected ? "✓" : "+"}
 
                 </div>
 
             `;
 
 
-            button.addEventListener(
+            card.addEventListener(
                 "click",
-                () =>
-                    toggleRacket(racket)
+                () => {
+
+                    toggleRacket(
+                        racket
+                    );
+
+                }
             );
 
 
-            selector.appendChild(button);
+            selector.appendChild(
+                card
+            );
 
         }
     );
@@ -362,26 +472,41 @@ function renderSelector() {
 
 
 /* =====================================================
-   TOGGLE
+   SELECT / REMOVE RACKET
 ===================================================== */
 
-function toggleRacket(racket) {
+function toggleRacket(
+    racket
+) {
 
     const index =
         selectedRackets.findIndex(
-            item =>
-                item.id === racket.id
+            selected =>
+                selected.id === racket.id
         );
 
 
-    if (index >= 0) {
+    /*
+        Already selected
+        -> remove
+    */
+
+    if (index !== -1) {
 
         selectedRackets.splice(
             index,
             1
         );
 
-    } else {
+    }
+
+
+    /*
+        Not selected
+        -> add
+    */
+
+    else {
 
         if (
             selectedRackets.length >=
@@ -389,6 +514,7 @@ function toggleRacket(racket) {
         ) {
 
             return;
+
         }
 
 
@@ -409,12 +535,29 @@ function toggleRacket(racket) {
 
 
 /* =====================================================
-   SELECTED CARDS
+   SELECTED RACKET CARDS
 ===================================================== */
 
 function renderSelected() {
 
     selectedContainer.innerHTML = "";
+
+
+    if (
+        selectedRackets.length === 0
+    ) {
+
+        selectedContainer.innerHTML = `
+
+            <div class="selected-placeholder">
+
+                No rackets selected yet.
+
+            </div>
+
+        `;
+
+    }
 
 
     selectedRackets.forEach(
@@ -430,12 +573,27 @@ function renderSelected() {
                 "selected-racket-card";
 
 
+            const color =
+                racketColors[
+                    index %
+                    racketColors.length
+                ];
+
+
             card.innerHTML = `
+
+                <div
+                    class="selected-racket-color"
+                    style="background:${color}"
+                ></div>
+
 
                 <div class="selected-racket-image">
 
                     <img
-                        src="${racket.image || ""}"
+                        src="${safeAttribute(
+                            racket.image
+                        )}"
                         alt="${escapeHTML(
                             racket.model
                         )}"
@@ -447,15 +605,20 @@ function renderSelected() {
                 <div class="selected-racket-info">
 
                     <span>
+
                         ${escapeHTML(
-                            racket.brand || ""
+                            racket.brand
                         )}
+
                     </span>
 
+
                     <h3>
+
                         ${escapeHTML(
-                            racket.model || ""
+                            racket.model
                         )}
+
                     </h3>
 
                 </div>
@@ -464,6 +627,7 @@ function renderSelected() {
                 <button
                     type="button"
                     class="remove-racket"
+                    aria-label="Remove racket"
                 >
                     ×
                 </button>
@@ -471,27 +635,30 @@ function renderSelected() {
             `;
 
 
-            card
-                .querySelector(
+            const removeButton =
+                card.querySelector(
                     ".remove-racket"
-                )
-                .addEventListener(
-                    "click",
-                    () => {
-
-                        selectedRackets.splice(
-                            index,
-                            1
-                        );
-
-                        renderSelector();
-
-                        renderSelected();
-
-                        updateComparison();
-
-                    }
                 );
+
+
+            removeButton.addEventListener(
+                "click",
+                () => {
+
+                    selectedRackets.splice(
+                        index,
+                        1
+                    );
+
+
+                    renderSelector();
+
+                    renderSelected();
+
+                    updateComparison();
+
+                }
+            );
 
 
             selectedContainer.appendChild(
@@ -505,67 +672,47 @@ function renderSelected() {
     selectionCount.textContent =
         `${selectedRackets.length} / ${MAX_SELECTION} selected`;
 
-
-    if (!selectedRackets.length) {
-
-        selectedContainer.innerHTML = `
-
-            <div style="
-                grid-column:1/-1;
-                padding:25px;
-                text-align:center;
-                color:#9ca3af;
-            ">
-                No rackets selected.
-            </div>
-
-        `;
-
-    }
-
 }
 
 
 /* =====================================================
-   UPDATE
+   UPDATE COMPARISON
 ===================================================== */
 
 function updateComparison() {
 
-    const enough =
+    const enoughRackets =
         selectedRackets.length >= 2;
 
 
-    if (enough) {
+    if (enoughRackets) {
 
         comparisonArea.classList.remove(
             "hidden"
         );
 
-        specSection.classList.remove(
-            "hidden"
-        );
 
         emptyState.classList.add(
             "hidden"
         );
 
 
-        drawRadar();
+        renderRadar();
 
         renderLegend();
 
+        renderCharacteristics();
+
         renderSpecs();
 
-    } else {
+    }
+
+    else {
 
         comparisonArea.classList.add(
             "hidden"
         );
 
-        specSection.classList.add(
-            "hidden"
-        );
 
         emptyState.classList.remove(
             "hidden"
@@ -577,125 +724,152 @@ function updateComparison() {
 
 
 /* =====================================================
-   RADAR DRAWING
+   RADAR CHART
 ===================================================== */
 
-function drawRadar() {
+function renderRadar() {
 
     const canvas =
         radarCanvas;
 
-    const ctx =
-        canvas.getContext("2d");
 
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-
-    const size =
-        Math.min(
-            rect.width || 560,
-            560
+    const context =
+        canvas.getContext(
+            "2d"
         );
 
 
-    const dpr =
+    /*
+        Get the actual CSS width.
+
+        This is important because the canvas
+        must scale correctly on different screens.
+    */
+
+    const cssWidth =
+        Math.min(
+            canvas.parentElement.clientWidth,
+            580
+        );
+
+
+    const size =
+        Math.max(
+            300,
+            cssWidth
+        );
+
+
+    const devicePixelRatio =
         window.devicePixelRatio || 1;
 
 
     canvas.width =
-        size * dpr;
+        size *
+        devicePixelRatio;
+
 
     canvas.height =
-        size * dpr;
+        size *
+        devicePixelRatio;
 
 
-    ctx.setTransform(
-        dpr,
+    canvas.style.width =
+        `${size}px`;
+
+
+    canvas.style.height =
+        `${size}px`;
+
+
+    context.setTransform(
+        devicePixelRatio,
         0,
         0,
-        dpr,
+        devicePixelRatio,
         0,
         0
     );
 
 
-    const width =
-        size;
-
-    const height =
-        size;
-
-
-    ctx.clearRect(
+    context.clearRect(
         0,
         0,
-        width,
-        height
+        size,
+        size
     );
 
 
     const centerX =
-        width / 2;
+        size / 2;
+
 
     const centerY =
-        height / 2;
-
-
-    const radius =
-        Math.min(
-            width,
-            height
-        ) * 0.33;
-
-
-    const count =
-        radarAxes.length;
+        size / 2;
 
 
     /*
-       Top axis starts at -90 degrees.
+        Leave room for labels.
     */
 
+    const radius =
+        size * 0.31;
+
+
+    const axisCount =
+        radarAxes.length;
+
+
     const angleStep =
-        (Math.PI * 2) / count;
+        (Math.PI * 2) /
+        axisCount;
 
 
-    function point(
-        index,
+    /*
+        Convert radar value into a point.
+    */
+
+    function getPoint(
+        axisIndex,
         value,
-        extraRadius = 0
+        customRadius = null
     ) {
 
         const angle =
             -Math.PI / 2 +
-            index * angleStep;
+            axisIndex *
+            angleStep;
 
 
-        const r =
-            extraRadius ||
-            radius * (
-                value / 10
-            );
+        const actualRadius =
+            customRadius !== null
+                ? customRadius
+                : radius *
+                    (
+                        value / 10
+                    );
 
 
         return {
 
             x:
                 centerX +
-                Math.cos(angle) * r,
+                Math.cos(angle) *
+                actualRadius,
 
             y:
                 centerY +
-                Math.sin(angle) * r
+                Math.sin(angle) *
+                actualRadius
 
         };
 
     }
 
 
-    /* GRID */
+    /* =================================================
+       GRID
+    ================================================= */
 
     for (
         let level = 1;
@@ -707,106 +881,115 @@ function drawRadar() {
             level * 2;
 
 
-        ctx.beginPath();
+        context.beginPath();
 
 
-        for (
-            let i = 0;
-            i < count;
-            i++
-        ) {
+        radarAxes.forEach(
+            (_, index) => {
 
-            const p =
-                point(
-                    i,
-                    value
-                );
+                const point =
+                    getPoint(
+                        index,
+                        value
+                    );
 
 
-            if (i === 0) {
+                if (index === 0) {
 
-                ctx.moveTo(
-                    p.x,
-                    p.y
-                );
+                    context.moveTo(
+                        point.x,
+                        point.y
+                    );
 
-            } else {
+                }
 
-                ctx.lineTo(
-                    p.x,
-                    p.y
-                );
+                else {
+
+                    context.lineTo(
+                        point.x,
+                        point.y
+                    );
+
+                }
 
             }
-
-        }
-
-
-        ctx.closePath();
+        );
 
 
-        ctx.strokeStyle =
+        context.closePath();
+
+
+        context.strokeStyle =
             "#e5e7eb";
 
-        ctx.lineWidth =
-            1;
 
-        ctx.stroke();
+        context.lineWidth = 1;
+
+
+        context.stroke();
 
     }
 
 
-    /* AXIS LINES */
+    /* =================================================
+       AXES
+    ================================================= */
 
-    for (
-        let i = 0;
-        i < count;
-        i++
-    ) {
+    radarAxes.forEach(
+        (_, index) => {
 
-        const p =
-            point(
-                i,
-                10
+            const point =
+                getPoint(
+                    index,
+                    10
+                );
+
+
+            context.beginPath();
+
+
+            context.moveTo(
+                centerX,
+                centerY
             );
 
 
-        ctx.beginPath();
-
-        ctx.moveTo(
-            centerX,
-            centerY
-        );
-
-        ctx.lineTo(
-            p.x,
-            p.y
-        );
+            context.lineTo(
+                point.x,
+                point.y
+            );
 
 
-        ctx.strokeStyle =
-            "#e5e7eb";
-
-        ctx.lineWidth =
-            1;
-
-        ctx.stroke();
-
-    }
+            context.strokeStyle =
+                "#e5e7eb";
 
 
-    /* LABELS */
+            context.lineWidth = 1;
 
-    ctx.font =
+
+            context.stroke();
+
+        }
+    );
+
+
+    /* =================================================
+       LABELS
+    ================================================= */
+
+    context.font =
         "600 12px Arial";
 
-    ctx.fillStyle =
+
+    context.fillStyle =
         "#4b5563";
 
-    ctx.textAlign =
+
+    context.textAlign =
         "center";
 
-    ctx.textBaseline =
+
+    context.textBaseline =
         "middle";
 
 
@@ -815,7 +998,8 @@ function drawRadar() {
 
             const angle =
                 -Math.PI / 2 +
-                index * angleStep;
+                index *
+                angleStep;
 
 
             const labelRadius =
@@ -834,7 +1018,7 @@ function drawRadar() {
                 labelRadius;
 
 
-            ctx.fillText(
+            context.fillText(
                 axis.label,
                 x,
                 y
@@ -844,7 +1028,49 @@ function drawRadar() {
     );
 
 
-    /* DATA */
+    /* =================================================
+       SCALE NUMBERS
+    ================================================= */
+
+    context.font =
+        "10px Arial";
+
+
+    context.fillStyle =
+        "#9ca3af";
+
+
+    context.textAlign =
+        "center";
+
+
+    context.textBaseline =
+        "middle";
+
+
+    [2, 4, 6, 8, 10].forEach(
+        value => {
+
+            const point =
+                getPoint(
+                    0,
+                    value
+                );
+
+
+            context.fillText(
+                String(value),
+                point.x + 13,
+                point.y
+            );
+
+        }
+    );
+
+
+    /* =================================================
+       RACKET DATA
+    ================================================= */
 
     selectedRackets.forEach(
         (racket, racketIndex) => {
@@ -856,21 +1082,21 @@ function drawRadar() {
                 ];
 
 
-            ctx.beginPath();
+            context.beginPath();
 
 
             radarAxes.forEach(
                 (axis, index) => {
 
                     const value =
-                        getValue(
+                        getCharacteristicValue(
                             racket,
                             axis.key
                         );
 
 
-                    const p =
-                        point(
+                    const point =
+                        getPoint(
                             index,
                             value
                         );
@@ -878,16 +1104,18 @@ function drawRadar() {
 
                     if (index === 0) {
 
-                        ctx.moveTo(
-                            p.x,
-                            p.y
+                        context.moveTo(
+                            point.x,
+                            point.y
                         );
 
-                    } else {
+                    }
 
-                        ctx.lineTo(
-                            p.x,
-                            p.y
+                    else {
+
+                        context.lineTo(
+                            point.x,
+                            point.y
                         );
 
                     }
@@ -896,61 +1124,76 @@ function drawRadar() {
             );
 
 
-            ctx.closePath();
+            context.closePath();
 
 
-            ctx.fillStyle =
+            /*
+                Transparent fill.
+            */
+
+            context.fillStyle =
                 hexToRGBA(
                     color,
                     0.10
                 );
 
-            ctx.fill();
+
+            context.fill();
 
 
-            ctx.strokeStyle =
+            /*
+                Main outline.
+            */
+
+            context.strokeStyle =
                 color;
 
-            ctx.lineWidth =
+
+            context.lineWidth =
                 2.5;
 
-            ctx.stroke();
+
+            context.stroke();
 
 
-            /* POINTS */
+            /*
+                Data points.
+            */
 
             radarAxes.forEach(
                 (axis, index) => {
 
                     const value =
-                        getValue(
+                        getCharacteristicValue(
                             racket,
                             axis.key
                         );
 
 
-                    const p =
-                        point(
+                    const point =
+                        getPoint(
                             index,
                             value
                         );
 
 
-                    ctx.beginPath();
+                    context.beginPath();
 
-                    ctx.arc(
-                        p.x,
-                        p.y,
+
+                    context.arc(
+                        point.x,
+                        point.y,
                         4,
                         0,
                         Math.PI * 2
                     );
 
 
-                    ctx.fillStyle =
+                    context.fillStyle =
                         color;
 
-                    ctx.fill();
+
+                    context.fill();
 
                 }
             );
@@ -987,26 +1230,23 @@ function renderLegend() {
 
 
             item.className =
-                "legend-item";
-
-
-            item.style.setProperty(
-                "--legend-color",
-                color
-            );
+                "radar-legend-item";
 
 
             item.innerHTML = `
 
                 <span
                     class="legend-dot"
+                    style="background:${color}"
                 ></span>
 
 
                 <div class="legend-image">
 
                     <img
-                        src="${racket.image || ""}"
+                        src="${safeAttribute(
+                            racket.image
+                        )}"
                         alt=""
                     >
 
@@ -1016,7 +1256,7 @@ function renderLegend() {
                 <span class="legend-name">
 
                     ${escapeHTML(
-                        racket.model || ""
+                        racket.model
                     )}
 
                 </span>
@@ -1035,7 +1275,105 @@ function renderLegend() {
 
 
 /* =====================================================
-   SPECS TABLE
+   CHARACTERISTICS TABLE
+===================================================== */
+
+function renderCharacteristics() {
+
+    characteristicHead.innerHTML =
+        "<th>Characteristic</th>";
+
+
+    selectedRackets.forEach(
+        racket => {
+
+            characteristicHead.innerHTML += `
+
+                <th>
+
+                    ${escapeHTML(
+                        racket.model
+                    )}
+
+                </th>
+
+            `;
+
+        }
+    );
+
+
+    characteristicBody.innerHTML = "";
+
+
+    characteristicRows.forEach(
+        ([label, key]) => {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            let html =
+                `<td>${label}</td>`;
+
+
+            selectedRackets.forEach(
+                racket => {
+
+                    const value =
+                        getCharacteristicValue(
+                            racket,
+                            key
+                        );
+
+
+                    html += `
+
+                        <td>
+
+                            <div
+                                class="characteristic-value"
+                            >
+                                ${value}/10
+                            </div>
+
+
+                            <div class="table-bar">
+
+                                <span
+                                    style="
+                                        width:${value * 10}%;
+                                    "
+                                ></span>
+
+                            </div>
+
+                        </td>
+
+                    `;
+
+                }
+            );
+
+
+            row.innerHTML =
+                html;
+
+
+            characteristicBody.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   OFFICIAL SPECIFICATIONS
 ===================================================== */
 
 function renderSpecs() {
@@ -1050,9 +1388,11 @@ function renderSpecs() {
             specHead.innerHTML += `
 
                 <th>
+
                     ${escapeHTML(
-                        racket.model || ""
+                        racket.model
                     )}
+
                 </th>
 
             `;
@@ -1064,7 +1404,7 @@ function renderSpecs() {
     specBody.innerHTML = "";
 
 
-    specifications.forEach(
+    specificationRows.forEach(
         ([label, key]) => {
 
             const row =
@@ -1086,16 +1426,18 @@ function renderSpecs() {
 
 
                     const value =
-                        specs[key] ??
-                        "—";
+                        specs[key];
 
 
                     html += `
 
                         <td>
+
                             ${escapeHTML(
-                                String(value)
+                                value ??
+                                "—"
                             )}
+
                         </td>
 
                     `;
@@ -1119,44 +1461,47 @@ function renderSpecs() {
 
 
 /* =====================================================
-   VALUE
+   GET CHARACTERISTIC VALUE
 ===================================================== */
 
-function getValue(
+function getCharacteristicValue(
     racket,
     key
 ) {
 
-    const value =
-        racket?.characteristics?.[key];
+    const characteristics =
+        racket.characteristics ||
+        {};
 
 
     const number =
-        Number(value);
+        Number(
+            characteristics[key]
+        );
 
 
     if (
-        Number.isFinite(number)
+        !Number.isFinite(number)
     ) {
 
-        return Math.max(
-            0,
-            Math.min(
-                10,
-                number
-            )
-        );
+        return 0;
 
     }
 
 
-    return 0;
+    return Math.max(
+        0,
+        Math.min(
+            10,
+            number
+        )
+    );
 
 }
 
 
 /* =====================================================
-   COLOR
+   HEX -> RGBA
 ===================================================== */
 
 function hexToRGBA(
@@ -1171,30 +1516,39 @@ function hexToRGBA(
         );
 
 
-    const bigint =
+    const number =
         parseInt(
             clean,
             16
         );
 
 
-    const r =
-        (bigint >> 16) & 255;
-
-    const g =
-        (bigint >> 8) & 255;
-
-    const b =
-        bigint & 255;
+    const red =
+        (number >> 16) & 255;
 
 
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    const green =
+        (number >> 8) & 255;
+
+
+    const blue =
+        number & 255;
+
+
+    return `
+        rgba(
+            ${red},
+            ${green},
+            ${blue},
+            ${alpha}
+        )
+    `;
 
 }
 
 
 /* =====================================================
-   ESCAPE
+   HTML ESCAPE
 ===================================================== */
 
 function escapeHTML(
@@ -1229,20 +1583,51 @@ function escapeHTML(
 
 
 /* =====================================================
+   SAFE IMAGE ATTRIBUTE
+===================================================== */
+
+function safeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value || ""
+    );
+
+}
+
+
+/* =====================================================
    RESIZE
 ===================================================== */
+
+let resizeTimer = null;
+
 
 window.addEventListener(
     "resize",
     () => {
 
-        if (
-            selectedRackets.length >= 2
-        ) {
+        clearTimeout(
+            resizeTimer
+        );
 
-            drawRadar();
 
-        }
+        resizeTimer =
+            setTimeout(
+                () => {
+
+                    if (
+                        selectedRackets.length >= 2
+                    ) {
+
+                        renderRadar();
+
+                    }
+
+                },
+                100
+            );
 
     }
 );
