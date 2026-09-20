@@ -7,9 +7,8 @@ import { rackets } from "../data/index.js";
 const MAX_SELECTION = 4;
 
 /*
-  IMPORTANT:
-  These are the SAME 7 axes used by the current radar chart.
-  Do not change them if you want the graph to remain the same.
+  DO NOT CHANGE
+  These are the 7 axes used by the current radar chart.
 */
 const radarAxes = [
   { key: "smashPower", label: "Smash" },
@@ -54,8 +53,8 @@ const specificationRows = [
 ];
 
 /*
-  Colors used by the radar chart and comparison bars.
-  This keeps the current graph appearance consistent.
+  CURRENT RADAR COLORS.
+  DO NOT CHANGE.
 */
 const racketColors = [
   "#111827",
@@ -69,55 +68,97 @@ let currentBrand = "All";
 
 /* =========================================================
    ELEMENTS
+   IMPORTANT:
+   These IDs match the CURRENT compare.html
 ========================================================= */
 
-const searchInput = document.getElementById("racket-search");
-const selectorList = document.getElementById("racket-selector-list");
-const selectedContainer = document.getElementById("selected-rackets");
-const selectedEmpty = document.getElementById("selected-empty");
+const searchInput =
+  document.getElementById("compare-search");
 
-const radarCanvas = document.getElementById("radar-chart");
-const radarLegend = document.getElementById("radar-legend");
+const selectorList =
+  document.getElementById("racket-selector");
 
-const characteristicsContainer =
-  document.getElementById("characteristics-container");
+const selectedContainer =
+  document.getElementById("selected-rackets");
 
-const specificationsContainer =
-  document.getElementById("specifications-container");
+const radarCanvas =
+  document.getElementById("radar-chart");
+
+const radarLegend =
+  document.getElementById("radar-legend");
+
+const comparisonArea =
+  document.getElementById("comparison-area");
+
+const emptyState =
+  document.getElementById("compare-empty");
+
+const characteristicHead =
+  document.getElementById("characteristic-head");
+
+const characteristicBody =
+  document.getElementById("characteristic-body");
+
+const specHead =
+  document.getElementById("spec-head");
+
+const specBody =
+  document.getElementById("spec-body");
 
 const brandButtons =
-  document.querySelectorAll(".brand-filter");
+  document.querySelectorAll(".compare-filter");
+
+const selectionCount =
+  document.getElementById("selection-count");
 
 /* =========================================================
    INITIALIZATION
 ========================================================= */
 
 function init() {
+
   renderSelector();
+
   renderSelectedRackets();
+
   updateComparison();
 
-  searchInput.addEventListener("input", renderSelector);
+  searchInput.addEventListener(
+    "input",
+    renderSelector
+  );
 
   brandButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      currentBrand = button.dataset.brand;
 
-      brandButtons.forEach(btn => {
-        btn.classList.remove("active");
-      });
+    button.addEventListener(
+      "click",
+      () => {
 
-      button.classList.add("active");
+        currentBrand =
+          button.dataset.brand;
 
-      renderSelector();
-    });
+        brandButtons.forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        renderSelector();
+      }
+    );
+
   });
 
-  window.addEventListener("resize", () => {
-    if (selectedRackets.length > 0) {
-      renderRadar();
+  window.addEventListener(
+    "resize",
+    () => {
+
+      if (selectedRackets.length > 0) {
+        renderRadar();
+      }
+
     }
-  });
+  );
 }
 
 init();
@@ -127,103 +168,153 @@ init();
 ========================================================= */
 
 function renderSelector() {
+
   const searchTerm =
-    searchInput.value.trim().toLowerCase();
-
-  const filtered = rackets.filter(racket => {
-
-    const matchesBrand =
-      currentBrand === "All" ||
-      racket.brand === currentBrand;
-
-    const searchableText = [
-      racket.model,
-      racket.brand,
-      racket.series
-    ]
-      .filter(Boolean)
-      .join(" ")
+    searchInput.value
+      .trim()
       .toLowerCase();
 
-    const matchesSearch =
-      searchableText.includes(searchTerm);
+  const filtered =
+    rackets.filter(racket => {
 
-    return matchesBrand && matchesSearch;
-  });
+      const matchesBrand =
+        currentBrand === "All" ||
+        racket.brand === currentBrand;
+
+      const searchableText = [
+        racket.model,
+        racket.brand,
+        racket.series
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      const matchesSearch =
+        searchableText.includes(searchTerm);
+
+      return matchesBrand && matchesSearch;
+    });
 
   if (filtered.length === 0) {
+
     selectorList.innerHTML = `
-      <div class="empty-state">
-        <strong>No rackets found</strong>
-        Try another search or brand filter.
+      <div class="no-results">
+        No rackets found.
       </div>
     `;
+
+    updateSelectionCount();
 
     return;
   }
 
-  selectorList.innerHTML = filtered.map(racket => {
+  selectorList.innerHTML =
+    filtered.map(racket => {
 
-    const selected = selectedRackets.some(
-      selectedRacket =>
-        selectedRacket.model === racket.model
-    );
+      const selected =
+        selectedRackets.some(
+          selectedRacket =>
+            selectedRacket.model === racket.model
+        );
 
-    const disabled =
-      !selected &&
-      selectedRackets.length >= MAX_SELECTION;
+      const disabled =
+        !selected &&
+        selectedRackets.length >= MAX_SELECTION;
 
-    return `
-      <div
-        class="
-          selector-list-item
-          ${selected ? "selected" : ""}
-          ${disabled ? "disabled" : ""}
-        "
-        data-model="${safeAttribute(racket.model)}"
-      >
-
-        <img
-          class="selector-racket-image"
-          src="${safeAttribute(racket.image)}"
-          alt="${escapeHTML(racket.model)}"
-          onerror="this.style.visibility='hidden'"
+      return `
+        <div
+          class="
+            selector-list-item
+            ${selected ? "selected" : ""}
+            ${disabled ? "disabled" : ""}
+          "
+          data-model="${safeAttribute(racket.model)}"
         >
 
-        <div class="selector-racket-info">
+          <div class="selector-list-image">
 
-          <div class="selector-racket-name">
-            ${escapeHTML(racket.model)}
+            <img
+              src="${safeAttribute(racket.image)}"
+              alt="${escapeHTML(racket.model)}"
+              onerror="this.style.visibility='hidden'"
+            >
+
           </div>
 
-          <div class="selector-racket-brand">
-            ${escapeHTML(racket.brand || "")}
+          <div class="selector-list-info">
+
+            <span class="selector-brand">
+              ${escapeHTML(racket.brand || "")}
+            </span>
+
+            <strong>
+              ${escapeHTML(racket.model)}
+            </strong>
+
+            <div class="selector-meta">
+
+              <span>
+                ${escapeHTML(
+                  racket.officialSpecs?.balance || ""
+                )}
+              </span>
+
+              <span>
+                ${escapeHTML(
+                  racket.officialSpecs?.shaftStiffness || ""
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+          <div class="selector-add">
+
+            ${selected ? "✓" : "+"}
+
           </div>
 
         </div>
+      `;
 
-      </div>
-    `;
-  }).join("");
+    }).join("");
 
   selectorList
     .querySelectorAll(".selector-list-item")
     .forEach(item => {
 
-      item.addEventListener("click", () => {
+      item.addEventListener(
+        "click",
+        () => {
 
-        if (
-          item.classList.contains("disabled")
-        ) {
-          return;
+          if (
+            item.classList.contains("disabled")
+          ) {
+            return;
+          }
+
+          toggleRacket(
+            item.dataset.model
+          );
+
         }
+      );
 
-        const model =
-          item.dataset.model;
-
-        toggleRacket(model);
-      });
     });
+
+  updateSelectionCount();
+}
+
+/* =========================================================
+   SELECTION COUNT
+========================================================= */
+
+function updateSelectionCount() {
+
+  selectionCount.textContent =
+    `${selectedRackets.length} / ${MAX_SELECTION} selected`;
 }
 
 /* =========================================================
@@ -232,9 +323,11 @@ function renderSelector() {
 
 function toggleRacket(model) {
 
-  const index = selectedRackets.findIndex(
-    racket => racket.model === model
-  );
+  const index =
+    selectedRackets.findIndex(
+      racket =>
+        racket.model === model
+    );
 
   if (index !== -1) {
 
@@ -242,13 +335,17 @@ function toggleRacket(model) {
 
   } else {
 
-    if (selectedRackets.length >= MAX_SELECTION) {
+    if (
+      selectedRackets.length >= MAX_SELECTION
+    ) {
       return;
     }
 
-    const racket = rackets.find(
-      racket => racket.model === model
-    );
+    const racket =
+      rackets.find(
+        racket =>
+          racket.model === model
+      );
 
     if (!racket) {
       return;
@@ -258,7 +355,9 @@ function toggleRacket(model) {
   }
 
   renderSelector();
+
   renderSelectedRackets();
+
   updateComparison();
 }
 
@@ -270,57 +369,83 @@ function renderSelectedRackets() {
 
   if (selectedRackets.length === 0) {
 
-    selectedContainer.innerHTML = "";
-
-    selectedEmpty.style.display = "block";
+    selectedContainer.innerHTML = `
+      <div class="selected-placeholder">
+        Select rackets above to compare them.
+      </div>
+    `;
 
     return;
   }
 
-  selectedEmpty.style.display = "none";
-
   selectedContainer.innerHTML =
-    selectedRackets.map(racket => {
+    selectedRackets.map(
+      (racket, index) => {
 
-      return `
-        <div class="selected-racket-card">
+        const color =
+          racketColors[
+            index % racketColors.length
+          ];
 
-          <button
-            class="remove-button"
-            data-remove="${safeAttribute(racket.model)}"
-            aria-label="Remove ${escapeHTML(racket.model)}"
-          >
-            ×
-          </button>
+        return `
+          <div class="selected-racket-card">
 
-          <img
-            class="selected-racket-image"
-            src="${safeAttribute(racket.image)}"
-            alt="${escapeHTML(racket.model)}"
-            onerror="this.style.visibility='hidden'"
-          >
+            <div
+              class="selected-racket-color"
+              style="background:${color}"
+            ></div>
 
-          <div class="selected-racket-name">
-            ${escapeHTML(racket.model)}
+            <div class="selected-racket-image">
+
+              <img
+                src="${safeAttribute(racket.image)}"
+                alt="${escapeHTML(racket.model)}"
+                onerror="this.style.visibility='hidden'"
+              >
+
+            </div>
+
+            <div class="selected-racket-info">
+
+              <span>
+                ${escapeHTML(racket.brand || "")}
+              </span>
+
+              <h3>
+                ${escapeHTML(racket.model)}
+              </h3>
+
+            </div>
+
+            <button
+              class="remove-racket"
+              data-remove="${safeAttribute(racket.model)}"
+              aria-label="Remove ${escapeHTML(racket.model)}"
+            >
+              ×
+            </button>
+
           </div>
+        `;
 
-          <div class="selected-racket-brand">
-            ${escapeHTML(racket.brand || "")}
-          </div>
-
-        </div>
-      `;
-    }).join("");
+      }
+    ).join("");
 
   selectedContainer
-    .querySelectorAll(".remove-button")
+    .querySelectorAll(".remove-racket")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        toggleRacket(button.dataset.remove);
+          toggleRacket(
+            button.dataset.remove
+          );
 
-      });
+        }
+      );
+
     });
 }
 
@@ -330,22 +455,44 @@ function renderSelectedRackets() {
 
 function updateComparison() {
 
+  const shouldShowComparison =
+    selectedRackets.length >= 2;
+
+  if (shouldShowComparison) {
+
+    comparisonArea.classList.remove("hidden");
+
+    emptyState.classList.add("hidden");
+
+  } else {
+
+    comparisonArea.classList.add("hidden");
+
+    emptyState.classList.remove("hidden");
+
+  }
+
   renderRadar();
+
   renderLegend();
+
   renderCharacteristics();
+
   renderSpecs();
 }
 
 /* =========================================================
    RADAR CHART
-   CURRENT GRAPH LOGIC
+   KEEP CURRENT GRAPH EXACTLY THE SAME
 ========================================================= */
 
 function renderRadar() {
 
-  const canvas = radarCanvas;
+  const canvas =
+    radarCanvas;
 
-  const rect = canvas.getBoundingClientRect();
+  const rect =
+    canvas.getBoundingClientRect();
 
   const cssWidth =
     Math.max(rect.width, 300);
@@ -381,9 +528,6 @@ function renderRadar() {
     cssHeight
   );
 
-  /*
-    Empty graph
-  */
   if (selectedRackets.length === 0) {
 
     drawEmptyRadar(
@@ -395,18 +539,12 @@ function renderRadar() {
     return;
   }
 
-  /*
-    Chart center
-  */
   const centerX =
     cssWidth / 2;
 
   const centerY =
     cssHeight / 2;
 
-  /*
-    Keep enough room for labels.
-  */
   const radius =
     Math.min(
       cssWidth * 0.34,
@@ -417,22 +555,20 @@ function renderRadar() {
   const axisCount =
     radarAxes.length;
 
-  /*
-    Start at top.
-  */
   const startAngle =
     -Math.PI / 2;
 
-  /*
-    Draw grid
-  */
   ctx.save();
 
   ctx.lineWidth = 1;
   ctx.strokeStyle = "#d1d5db";
   ctx.fillStyle = "#f9fafb";
 
-  for (let level = 1; level <= 5; level++) {
+  for (
+    let level = 1;
+    level <= 5;
+    level++
+  ) {
 
     const levelRadius =
       radius * (level / 5);
@@ -447,32 +583,34 @@ function renderRadar() {
 
       const angle =
         startAngle +
-        (i * Math.PI * 2) / axisCount;
+        (i * Math.PI * 2) /
+          axisCount;
 
       const x =
         centerX +
-        Math.cos(angle) * levelRadius;
+        Math.cos(angle) *
+          levelRadius;
 
       const y =
         centerY +
-        Math.sin(angle) * levelRadius;
+        Math.sin(angle) *
+          levelRadius;
 
       if (i === 0) {
         ctx.moveTo(x, y);
       } else {
         ctx.lineTo(x, y);
       }
+
     }
 
     ctx.closePath();
 
     ctx.fill();
+
     ctx.stroke();
   }
 
-  /*
-    Axis lines
-  */
   for (
     let i = 0;
     i < axisCount;
@@ -481,15 +619,18 @@ function renderRadar() {
 
     const angle =
       startAngle +
-      (i * Math.PI * 2) / axisCount;
+      (i * Math.PI * 2) /
+        axisCount;
 
     const x =
       centerX +
-      Math.cos(angle) * radius;
+      Math.cos(angle) *
+        radius;
 
     const y =
       centerY +
-      Math.sin(angle) * radius;
+      Math.sin(angle) *
+        radius;
 
     ctx.beginPath();
 
@@ -508,9 +649,8 @@ function renderRadar() {
 
   ctx.restore();
 
-  /*
-    Axis labels
-  */
+  /* Axis labels */
+
   ctx.save();
 
   ctx.font =
@@ -519,8 +659,11 @@ function renderRadar() {
   ctx.fillStyle =
     "#374151";
 
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
+  ctx.textAlign =
+    "center";
+
+  ctx.textBaseline =
+    "middle";
 
   for (
     let i = 0;
@@ -530,18 +673,21 @@ function renderRadar() {
 
     const angle =
       startAngle +
-      (i * Math.PI * 2) / axisCount;
+      (i * Math.PI * 2) /
+        axisCount;
 
     const labelDistance =
       radius + 30;
 
     const x =
       centerX +
-      Math.cos(angle) * labelDistance;
+      Math.cos(angle) *
+        labelDistance;
 
     const y =
       centerY +
-      Math.sin(angle) * labelDistance;
+      Math.sin(angle) *
+        labelDistance;
 
     ctx.fillText(
       radarAxes[i].label,
@@ -552,9 +698,8 @@ function renderRadar() {
 
   ctx.restore();
 
-  /*
-    Draw racket polygons
-  */
+  /* Racket polygons */
+
   selectedRackets.forEach(
     (racket, racketIndex) => {
 
@@ -609,22 +754,17 @@ function renderRadar() {
           } else {
             ctx.lineTo(x, y);
           }
+
         }
       );
 
       ctx.closePath();
 
-      /*
-        Fill
-      */
       ctx.fillStyle =
         hexToRGBA(color, 0.16);
 
       ctx.fill();
 
-      /*
-        Outline
-      */
       ctx.strokeStyle =
         color;
 
@@ -632,9 +772,6 @@ function renderRadar() {
 
       ctx.stroke();
 
-      /*
-        Points
-      */
       radarAxes.forEach(
         (axis, axisIndex) => {
 
@@ -699,9 +836,8 @@ function renderRadar() {
     }
   );
 
-  /*
-    Scale labels
-  */
+  /* Scale labels */
+
   ctx.save();
 
   ctx.font =
@@ -716,7 +852,11 @@ function renderRadar() {
   ctx.textBaseline =
     "middle";
 
-  for (let level = 1; level <= 5; level++) {
+  for (
+    let level = 1;
+    level <= 5;
+    level++
+  ) {
 
     const levelRadius =
       radius * (level / 5);
@@ -804,6 +944,7 @@ function drawEmptyRadar(
       } else {
         ctx.lineTo(x, y);
       }
+
     }
 
     ctx.closePath();
@@ -924,19 +1065,22 @@ function renderLegend() {
           ];
 
         return `
-          <div class="legend-item">
+          <div class="radar-legend-item">
 
             <span
-              class="legend-color"
+              class="legend-dot"
               style="background:${color}"
             ></span>
 
-            <img
-              class="legend-image"
-              src="${safeAttribute(racket.image)}"
-              alt="${escapeHTML(racket.model)}"
-              onerror="this.style.visibility='hidden'"
-            >
+            <div class="legend-image">
+
+              <img
+                src="${safeAttribute(racket.image)}"
+                alt="${escapeHTML(racket.model)}"
+                onerror="this.style.visibility='hidden'"
+              >
+
+            </div>
 
             <div class="legend-name">
               ${escapeHTML(racket.model)}
@@ -950,18 +1094,20 @@ function renderLegend() {
 
 /* =========================================================
    CHARACTERISTICS COMPARISON TABLE
+   ONLY THIS TABLE'S CONTENT WAS CHANGED
 ========================================================= */
 
 function renderCharacteristics() {
 
   if (selectedRackets.length === 0) {
 
-    characteristicsContainer.innerHTML = `
-      <div class="empty-state">
-        <strong>No comparison available</strong>
-        Select at least one racket to see its characteristics.
-      </div>
+    characteristicHead.innerHTML = `
+      <th>
+        Characteristic
+      </th>
     `;
+
+    characteristicBody.innerHTML = "";
 
     return;
   }
@@ -971,23 +1117,21 @@ function renderCharacteristics() {
     Characteristic | Racket 1 | Racket 2 | Racket 3 | Racket 4
   */
 
-  const headerCells =
-    selectedRackets.map(
-      racket => {
+  characteristicHead.innerHTML = `
+    <th>
+      Characteristic
+    </th>
 
-        return `
-          <th>
-            ${renderTableRacketHeader(racket)}
-          </th>
-        `;
-      }
-    ).join("");
+    ${selectedRackets.map(
+      racket => `
+        <th>
+          ${renderTableRacketHeader(racket)}
+        </th>
+      `
+    ).join("")}
+  `;
 
-  /*
-    Body rows
-  */
-
-  const bodyRows =
+  characteristicBody.innerHTML =
     characteristicRows.map(
       ([label, key]) => {
 
@@ -1011,20 +1155,19 @@ function renderCharacteristics() {
                 );
 
               return `
-                <td class="characteristic-cell">
+                <td class="characteristic-value">
 
-                  <span class="value-number">
-                    ${formatNumber(value)}
-                  </span>
+                  ${formatNumber(value)}
 
-                  <div class="value-bar">
-                    <div
-                      class="value-bar-fill"
+                  <div class="table-bar">
+
+                    <span
                       style="
                         width:${percentage}%;
                         background:${getRacketColor(racket)};
                       "
-                    ></div>
+                    ></span>
+
                   </div>
 
                 </td>
@@ -1034,69 +1177,59 @@ function renderCharacteristics() {
 
         return `
           <tr>
+
             <th scope="row">
               ${escapeHTML(label)}
             </th>
 
             ${cells}
+
           </tr>
         `;
       }
     ).join("");
-
-  characteristicsContainer.innerHTML = `
-    <div class="comparison-table-wrapper">
-
-      <table class="comparison-table">
-
-        <thead>
-          <tr>
-            <th>Characteristic</th>
-            ${headerCells}
-          </tr>
-        </thead>
-
-        <tbody>
-          ${bodyRows}
-        </tbody>
-
-      </table>
-
-    </div>
-  `;
 }
 
 /* =========================================================
-   OFFICIAL SPECIFICATIONS TABLE
+   OFFICIAL SPECIFICATIONS COMPARISON TABLE
+   ONLY THIS TABLE'S CONTENT WAS CHANGED
 ========================================================= */
 
 function renderSpecs() {
 
   if (selectedRackets.length === 0) {
 
-    specificationsContainer.innerHTML = `
-      <div class="empty-state">
-        <strong>No specifications available</strong>
-        Select at least one racket to see its official specifications.
-      </div>
+    specHead.innerHTML = `
+      <th>
+        Specification
+      </th>
     `;
+
+    specBody.innerHTML = "";
 
     return;
   }
 
-  const headerCells =
-    selectedRackets.map(
-      racket => {
+  /*
+    Header:
+    Specification | Racket 1 | Racket 2 | Racket 3 | Racket 4
+  */
 
-        return `
-          <th>
-            ${renderTableRacketHeader(racket)}
-          </th>
-        `;
-      }
-    ).join("");
+  specHead.innerHTML = `
+    <th>
+      Specification
+    </th>
 
-  const bodyRows =
+    ${selectedRackets.map(
+      racket => `
+        <th>
+          ${renderTableRacketHeader(racket)}
+        </th>
+      `
+    ).join("")}
+  `;
+
+  specBody.innerHTML =
     specificationRows.map(
       ([label, key]) => {
 
@@ -1112,48 +1245,28 @@ function renderSpecs() {
 
               return `
                 <td>
-                  <span class="spec-value">
-                    ${escapeHTML(
-                      formatSpecificationValue(value)
-                    )}
-                  </span>
+                  ${escapeHTML(
+                    formatSpecificationValue(value)
+                  )}
                 </td>
               `;
+
             }
           ).join("");
 
         return `
           <tr>
+
             <th scope="row">
               ${escapeHTML(label)}
             </th>
 
             ${cells}
+
           </tr>
         `;
       }
     ).join("");
-
-  specificationsContainer.innerHTML = `
-    <div class="comparison-table-wrapper">
-
-      <table class="comparison-table">
-
-        <thead>
-          <tr>
-            <th>Specification</th>
-            ${headerCells}
-          </tr>
-        </thead>
-
-        <tbody>
-          ${bodyRows}
-        </tbody>
-
-      </table>
-
-    </div>
-  `;
 }
 
 /* =========================================================
@@ -1163,22 +1276,46 @@ function renderSpecs() {
 function renderTableRacketHeader(racket) {
 
   return `
-    <div class="table-racket-header">
+    <div
+      style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        min-width:150px;
+      "
+    >
 
       <img
-        class="table-racket-image"
         src="${safeAttribute(racket.image)}"
         alt="${escapeHTML(racket.model)}"
+        style="
+          width:38px;
+          height:48px;
+          object-fit:contain;
+          flex-shrink:0;
+        "
         onerror="this.style.visibility='hidden'"
       >
 
-      <div class="table-racket-info">
+      <div>
 
-        <div class="table-racket-name">
+        <div
+          style="
+            font-weight:700;
+            line-height:1.25;
+          "
+        >
           ${escapeHTML(racket.model)}
         </div>
 
-        <div class="table-racket-brand">
+        <div
+          style="
+            margin-top:3px;
+            color:#6b7280;
+            font-size:11px;
+            font-weight:500;
+          "
+        >
           ${escapeHTML(racket.brand || "")}
         </div>
 
