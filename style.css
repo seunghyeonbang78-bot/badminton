@@ -296,31 +296,64 @@ a {
 }
 
 
+/* =========================
+   RACKET CARD IMAGE
+   ========================= */
+
 .racket-image {
-
     height: 310px;
-
-    background: #f1f1ee;
+    position: relative;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
+    background: #f7f7f5;
+
+    overflow: hidden;
 }
 
+/* subtle inner lighting */
+.racket-image::before {
+    content: "";
+    position: absolute;
+    inset: 0;
 
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(255,255,255,0.95) 0%,
+            rgba(255,255,255,0.55) 45%,
+            rgba(245,245,242,0) 75%
+        );
+
+    pointer-events: none;
+}
+
+/* racket image */
 .racket-image img {
+    position: relative;
+    z-index: 1;
 
-    width: 80%;
-
-    height: 80%;
+    width: 88%;
+    height: 88%;
 
     object-fit: contain;
 
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    transition:
+        transform .35s ease,
+        filter .35s ease;
 }
 
+/* premium hover effect */
+.racket-card:hover .racket-image img {
+    transform: scale(1.04);
+    filter: brightness(1.02);
+}
 
 .racket-card-info {
 
