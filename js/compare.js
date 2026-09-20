@@ -4,13 +4,12 @@ import { rackets } from "../data/index.js";
 const MAX_SELECTION = 4;
 
 let selectedRackets = [];
-
 let currentBrand = "All";
 
 
-// =========================
-// ELEMENTS
-// =========================
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
 const searchInput =
     document.getElementById("compare-search");
@@ -30,11 +29,8 @@ const emptyState =
 const selectionCount =
     document.getElementById("selection-count");
 
-const radarChart =
-    document.getElementById("radar-chart");
-
-const radarLegend =
-    document.getElementById("radar-legend");
+const performanceGrid =
+    document.getElementById("performance-grid");
 
 const characteristicHead =
     document.getElementById("characteristic-head");
@@ -52,31 +48,99 @@ const filterButtons =
     document.querySelectorAll(".compare-filter");
 
 
-// =========================
-// INITIAL RENDER
-// =========================
+/* =====================================================
+   DATA
+===================================================== */
+
+const performanceCharacteristics = [
+
+    {
+        key: "smashPower",
+        label: "Smash Power"
+    },
+
+    {
+        key: "swingSpeed",
+        label: "Swing Speed"
+    },
+
+    {
+        key: "defense",
+        label: "Defense"
+    },
+
+    {
+        key: "control",
+        label: "Control"
+    },
+
+    {
+        key: "stability",
+        label: "Stability"
+    },
+
+    {
+        key: "repulsion",
+        label: "Repulsion"
+    }
+
+];
+
+
+const characteristics = [
+
+    ["Head Heavy", "headHeavy"],
+    ["Smash Power", "smashPower"],
+    ["Swing Speed", "swingSpeed"],
+    ["Defense", "defense"],
+    ["Control", "control"],
+    ["Repulsion", "repulsion"],
+    ["Stability", "stability"],
+    ["Maneuverability", "maneuverability"],
+    ["Holding", "holding"],
+    ["Touch", "touch"],
+    ["Precision", "precision"]
+
+];
+
+
+const specifications = [
+
+    ["Weight", "weight"],
+    ["Grip", "grip"],
+    ["Balance", "balance"],
+    ["Shaft Stiffness", "shaftStiffness"],
+    ["Length", "length"],
+    ["Max Tension", "maxTension"],
+    ["Frame Material", "frameMaterial"],
+    ["Shaft Material", "shaftMaterial"],
+    ["Release Year", "releaseYear"]
+
+];
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
 
 renderSelector();
-
 renderSelected();
-
 updateComparison();
 
 
-// =========================
-// SEARCH
-// =========================
+/* =====================================================
+   SEARCH
+===================================================== */
 
-searchInput.addEventListener("input", () => {
+searchInput.addEventListener(
+    "input",
+    renderSelector
+);
 
-    renderSelector();
 
-});
-
-
-// =========================
-// BRAND FILTER
-// =========================
+/* =====================================================
+   BRAND FILTER
+===================================================== */
 
 filterButtons.forEach(button => {
 
@@ -98,9 +162,9 @@ filterButtons.forEach(button => {
 });
 
 
-// =========================
-// RENDER SELECTOR
-// =========================
+/* =====================================================
+   SELECTOR
+===================================================== */
 
 function renderSelector() {
 
@@ -113,18 +177,23 @@ function renderSelector() {
     const filtered =
         rackets.filter(racket => {
 
+            const model =
+                String(racket.model || "")
+                    .toLowerCase();
+
+            const brand =
+                String(racket.brand || "")
+                    .toLowerCase();
+
+            const series =
+                String(racket.series || "")
+                    .toLowerCase();
+
+
             const matchesSearch =
-                racket.model
-                    .toLowerCase()
-                    .includes(search) ||
-
-                racket.brand
-                    .toLowerCase()
-                    .includes(search) ||
-
-                racket.series
-                    .toLowerCase()
-                    .includes(search);
+                model.includes(search) ||
+                brand.includes(search) ||
+                series.includes(search);
 
 
             const matchesBrand =
@@ -132,7 +201,10 @@ function renderSelector() {
                 racket.brand === currentBrand;
 
 
-            return matchesSearch && matchesBrand;
+            return (
+                matchesSearch &&
+                matchesBrand
+            );
 
         });
 
@@ -143,16 +215,20 @@ function renderSelector() {
     if (filtered.length === 0) {
 
         selector.innerHTML = `
+
             <div class="no-results">
+
                 <strong>No rackets found</strong>
+
                 <p>
                     Try another search or brand.
                 </p>
+
             </div>
+
         `;
 
         return;
-
     }
 
 
@@ -169,6 +245,8 @@ function renderSelector() {
             document.createElement("button");
 
 
+        card.type = "button";
+
         card.className =
             "selector-list-item";
 
@@ -178,13 +256,17 @@ function renderSelector() {
         }
 
 
+        const specs =
+            racket.officialSpecs || {};
+
+
         card.innerHTML = `
 
             <div class="selector-list-image">
 
                 <img
-                    src="${racket.image}"
-                    alt="${racket.model}"
+                    src="${racket.image || ""}"
+                    alt="${escapeHTML(racket.model || "Racket")}"
                 >
 
             </div>
@@ -193,21 +275,21 @@ function renderSelector() {
             <div class="selector-list-info">
 
                 <span class="selector-brand">
-                    ${racket.brand}
+                    ${escapeHTML(racket.brand || "")}
                 </span>
 
                 <strong>
-                    ${racket.model}
+                    ${escapeHTML(racket.model || "")}
                 </strong>
 
                 <div class="selector-meta">
 
                     <span>
-                        ${racket.officialSpecs.balance || "—"}
+                        ${escapeHTML(specs.balance || "—")}
                     </span>
 
                     <span>
-                        ${racket.officialSpecs.weight || "—"}
+                        ${escapeHTML(specs.weight || "—")}
                     </span>
 
                 </div>
@@ -224,11 +306,10 @@ function renderSelector() {
         `;
 
 
-        card.addEventListener("click", () => {
-
-            toggleRacket(racket);
-
-        });
+        card.addEventListener(
+            "click",
+            () => toggleRacket(racket)
+        );
 
 
         selector.appendChild(card);
@@ -238,9 +319,9 @@ function renderSelector() {
 }
 
 
-// =========================
-// SELECT / REMOVE
-// =========================
+/* =====================================================
+   TOGGLE RACKET
+===================================================== */
 
 function toggleRacket(racket) {
 
@@ -251,15 +332,14 @@ function toggleRacket(racket) {
         );
 
 
-    // Already selected
     if (index !== -1) {
 
-        selectedRackets.splice(index, 1);
+        selectedRackets.splice(
+            index,
+            1
+        );
 
-    }
-
-    // New selection
-    else {
+    } else {
 
         if (
             selectedRackets.length >=
@@ -267,8 +347,8 @@ function toggleRacket(racket) {
         ) {
 
             return;
-
         }
+
 
         selectedRackets.push(racket);
 
@@ -276,17 +356,15 @@ function toggleRacket(racket) {
 
 
     renderSelector();
-
     renderSelected();
-
     updateComparison();
 
 }
 
 
-// =========================
-// SELECTED RACKETS
-// =========================
+/* =====================================================
+   SELECTED RACKETS
+===================================================== */
 
 function renderSelected() {
 
@@ -321,42 +399,33 @@ function renderSelected() {
 
             card.innerHTML = `
 
-                <div class="
-                    selected-racket-color
-                    selected-color-${index}
-                "></div>
-
-
-                <div class="
-                    selected-racket-image
-                ">
+                <div class="selected-racket-image">
 
                     <img
-                        src="${racket.image}"
-                        alt="${racket.model}"
+                        src="${racket.image || ""}"
+                        alt="${escapeHTML(racket.model || "Racket")}"
                     >
 
                 </div>
 
 
-                <div class="
-                    selected-racket-info
-                ">
+                <div class="selected-racket-info">
 
                     <span>
-                        ${racket.brand}
+                        ${escapeHTML(racket.brand || "")}
                     </span>
 
                     <h3>
-                        ${racket.model}
+                        ${escapeHTML(racket.model || "")}
                     </h3>
 
                 </div>
 
 
                 <button
+                    type="button"
                     class="remove-racket"
-                    aria-label="Remove ${racket.model}"
+                    aria-label="Remove racket"
                 >
                     ×
                 </button>
@@ -364,25 +433,27 @@ function renderSelected() {
             `;
 
 
-            card
-                .querySelector(".remove-racket")
-                .addEventListener(
-                    "click",
-                    () => {
-
-                        selectedRackets.splice(
-                            index,
-                            1
-                        );
-
-                        renderSelector();
-
-                        renderSelected();
-
-                        updateComparison();
-
-                    }
+            const removeButton =
+                card.querySelector(
+                    ".remove-racket"
                 );
+
+
+            removeButton.addEventListener(
+                "click",
+                () => {
+
+                    selectedRackets.splice(
+                        index,
+                        1
+                    );
+
+                    renderSelector();
+                    renderSelected();
+                    updateComparison();
+
+                }
+            );
 
 
             selectedContainer.appendChild(card);
@@ -397,9 +468,9 @@ function renderSelected() {
 }
 
 
-// =========================
-// COMPARISON VISIBILITY
-// =========================
+/* =====================================================
+   COMPARISON
+===================================================== */
 
 function updateComparison() {
 
@@ -413,15 +484,12 @@ function updateComparison() {
             "hidden"
         );
 
-        renderRadar();
 
+        renderPerformance();
         renderCharacteristics();
-
         renderSpecs();
 
-    }
-
-    else {
+    } else {
 
         comparisonArea.classList.add(
             "hidden"
@@ -436,275 +504,97 @@ function updateComparison() {
 }
 
 
-// =========================
-// RADAR CHART
-// =========================
+/* =====================================================
+   PERFORMANCE
+===================================================== */
 
-const radarAxes = [
+function renderPerformance() {
 
-    {
-        key: "smashPower",
-        label: "Smash"
-    },
-
-    {
-        key: "swingSpeed",
-        label: "Speed"
-    },
-
-    {
-        key: "defense",
-        label: "Defense"
-    },
-
-    {
-        key: "control",
-        label: "Control"
-    },
-
-    {
-        key: "stability",
-        label: "Stability"
-    },
-
-    {
-        key: "repulsion",
-        label: "Repulsion"
-    }
-
-];
+    performanceGrid.innerHTML = "";
 
 
-function renderRadar() {
+    performanceCharacteristics.forEach(
+        characteristic => {
 
-    const centerX = 350;
-
-    const centerY = 300;
-
-    const radius = 190;
-
-    const levels = 5;
-
-    const angleStep =
-        (Math.PI * 2) /
-        radarAxes.length;
+            const wrapper =
+                document.createElement("div");
 
 
-    radarChart.innerHTML = "";
+            wrapper.className =
+                "performance-row";
 
 
-    // =========================
-    // GRID
-    // =========================
-
-    for (
-        let level = 1;
-        level <= levels;
-        level++
-    ) {
-
-        const points =
-            radarAxes.map(
-                (_, index) => {
-
-                    const value =
-                        radius *
-                        (level / levels);
-
-                    const angle =
-                        index *
-                        angleStep -
-                        Math.PI / 2;
-
-                    const x =
-                        centerX +
-                        Math.cos(angle) *
-                        value;
-
-                    const y =
-                        centerY +
-                        Math.sin(angle) *
-                        value;
-
-                    return `${x},${y}`;
-
-                }
-            ).join(" ");
-
-
-        radarChart.innerHTML += `
-
-            <polygon
-                points="${points}"
-                class="radar-grid"
-            />
-
-        `;
-
-    }
-
-
-    // =========================
-    // AXES
-    // =========================
-
-    radarAxes.forEach(
-        (axis, index) => {
-
-            const angle =
-                index *
-                angleStep -
-                Math.PI / 2;
-
-
-            const x =
-                centerX +
-                Math.cos(angle) *
-                radius;
-
-            const y =
-                centerY +
-                Math.sin(angle) *
-                radius;
-
-
-            radarChart.innerHTML += `
-
-                <line
-                    x1="${centerX}"
-                    y1="${centerY}"
-                    x2="${x}"
-                    y2="${y}"
-                    class="radar-axis"
-                />
-
-            `;
-
-
-            const labelDistance =
-                radius + 35;
-
-
-            const labelX =
-                centerX +
-                Math.cos(angle) *
-                labelDistance;
-
-
-            const labelY =
-                centerY +
-                Math.sin(angle) *
-                labelDistance;
-
-
-            radarChart.innerHTML += `
-
-                <text
-                    x="${labelX}"
-                    y="${labelY}"
-                    text-anchor="middle"
-                    dominant-baseline="middle"
-                    class="radar-label"
-                >
-                    ${axis.label}
-                </text>
-
-            `;
-
-        }
-    );
-
-
-    // =========================
-    // DATA
-    // =========================
-
-    selectedRackets.forEach(
-        (racket, racketIndex) => {
-
-            const points =
-                radarAxes.map(
-                    (axis, index) => {
+            const rows =
+                selectedRackets.map(
+                    racket => {
 
                         const value =
-                            racket.characteristics[
-                                axis.key
-                            ] || 0;
+                            getNumericCharacteristic(
+                                racket,
+                                characteristic.key
+                            );
 
 
-                        const scaled =
-                            radius *
-                            (value / 10);
+                        return `
+
+                            <div class="performance-racket-row">
+
+                                <span
+                                    class="performance-racket-name"
+                                    title="${escapeHTML(racket.model || "")}"
+                                >
+                                    ${escapeHTML(
+                                        shortName(racket.model)
+                                    )}
+                                </span>
 
 
-                        const angle =
-                            index *
-                            angleStep -
-                            Math.PI / 2;
+                                <div class="performance-track">
+
+                                    <div
+                                        class="performance-fill"
+                                        style="width:${value * 10}%"
+                                    ></div>
+
+                                </div>
 
 
-                        const x =
-                            centerX +
-                            Math.cos(angle) *
-                            scaled;
+                                <span class="performance-value">
+                                    ${value}
+                                </span>
 
+                            </div>
 
-                        const y =
-                            centerY +
-                            Math.sin(angle) *
-                            scaled;
-
-
-                        return `${x},${y}`;
+                        `;
 
                     }
-                ).join(" ");
+                )
+                .join("");
 
 
-            radarChart.innerHTML += `
+            wrapper.innerHTML = `
 
-                <polygon
-                    points="${points}"
-                    class="
-                        radar-data
-                        radar-${racketIndex}
-                    "
-                />
+                <div class="performance-label">
 
-            `;
-
-        }
-    );
-
-
-    // =========================
-    // LEGEND
-    // =========================
-
-    radarLegend.innerHTML = "";
-
-
-    selectedRackets.forEach(
-        (racket, index) => {
-
-            radarLegend.innerHTML += `
-
-                <div class="radar-legend-item">
-
-                    <span
-                        class="
-                            legend-dot
-                            legend-${index}
-                        "
-                    ></span>
-
-                    <span>
-                        ${racket.model}
+                    <span class="performance-name">
+                        ${characteristic.label}
                     </span>
 
                 </div>
 
+
+                <div class="performance-rackets">
+
+                    ${rows}
+
+                </div>
+
             `;
+
+
+            performanceGrid.appendChild(
+                wrapper
+            );
 
         }
     );
@@ -712,54 +602,23 @@ function renderRadar() {
 }
 
 
-// =========================
-// CHARACTERISTICS TABLE
-// =========================
+/* =====================================================
+   CHARACTERISTICS TABLE
+===================================================== */
 
 function renderCharacteristics() {
-
-    const characteristics = [
-
-        ["Head Heavy", "headHeavy"],
-
-        ["Smash Power", "smashPower"],
-
-        ["Swing Speed", "swingSpeed"],
-
-        ["Defense", "defense"],
-
-        ["Control", "control"],
-
-        ["Repulsion", "repulsion"],
-
-        ["Stability", "stability"],
-
-        ["Maneuverability", "maneuverability"],
-
-        ["Holding", "holding"],
-
-        ["Touch", "touch"],
-
-        ["Precision", "precision"]
-
-    ];
-
 
     characteristicHead.innerHTML =
         "<th>Characteristic</th>";
 
 
     selectedRackets.forEach(
-        (racket, index) => {
+        racket => {
 
             characteristicHead.innerHTML += `
 
                 <th>
-
-                    <strong>
-                        ${racket.model}
-                    </strong>
-
+                    ${escapeHTML(racket.model || "")}
                 </th>
 
             `;
@@ -786,23 +645,24 @@ function renderCharacteristics() {
                 racket => {
 
                     const value =
-                        racket.characteristics[key] ?? 0;
+                        getNumericCharacteristic(
+                            racket,
+                            key
+                        );
 
 
                     html += `
 
                         <td>
 
-                            <strong>
+                            <div class="table-value">
                                 ${value}/10
-                            </strong>
+                            </div>
 
                             <div class="table-bar">
 
                                 <span
-                                    style="
-                                        width:${value * 10}%;
-                                    "
+                                    style="width:${value * 10}%"
                                 ></span>
 
                             </div>
@@ -817,7 +677,9 @@ function renderCharacteristics() {
 
             row.innerHTML = html;
 
-            characteristicBody.appendChild(row);
+            characteristicBody.appendChild(
+                row
+            );
 
         }
     );
@@ -825,34 +687,11 @@ function renderCharacteristics() {
 }
 
 
-// =========================
-// OFFICIAL SPECS
-// =========================
+/* =====================================================
+   SPECIFICATIONS
+===================================================== */
 
 function renderSpecs() {
-
-    const specs = [
-
-        ["Weight", "weight"],
-
-        ["Grip", "grip"],
-
-        ["Balance", "balance"],
-
-        ["Shaft Stiffness", "shaftStiffness"],
-
-        ["Length", "length"],
-
-        ["Max Tension", "maxTension"],
-
-        ["Frame Material", "frameMaterial"],
-
-        ["Shaft Material", "shaftMaterial"],
-
-        ["Release Year", "releaseYear"]
-
-    ];
-
 
     specHead.innerHTML =
         "<th>Specification</th>";
@@ -864,7 +703,7 @@ function renderSpecs() {
             specHead.innerHTML += `
 
                 <th>
-                    ${racket.model}
+                    ${escapeHTML(racket.model || "")}
                 </th>
 
             `;
@@ -876,7 +715,7 @@ function renderSpecs() {
     specBody.innerHTML = "";
 
 
-    specs.forEach(
+    specifications.forEach(
         ([label, key]) => {
 
             const row =
@@ -890,15 +729,20 @@ function renderSpecs() {
             selectedRackets.forEach(
                 racket => {
 
+                    const specs =
+                        racket.officialSpecs || {};
+
+
                     const value =
-                        racket.officialSpecs[key] ||
-                        "—";
+                        specs[key] ?? "—";
 
 
                     html += `
 
                         <td>
-                            ${value}
+                            ${escapeHTML(
+                                String(value)
+                            )}
                         </td>
 
                     `;
@@ -909,9 +753,79 @@ function renderSpecs() {
 
             row.innerHTML = html;
 
-            specBody.appendChild(row);
+            specBody.appendChild(
+                row
+            );
 
         }
     );
+
+}
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function getNumericCharacteristic(
+    racket,
+    key
+) {
+
+    const value =
+        racket?.characteristics?.[key];
+
+
+    const number =
+        Number(value);
+
+
+    if (
+        Number.isFinite(number)
+    ) {
+
+        return Math.max(
+            0,
+            Math.min(10, number)
+        );
+
+    }
+
+
+    return 0;
+
+}
+
+
+function shortName(name) {
+
+    if (!name) {
+        return "Racket";
+    }
+
+
+    if (name.length <= 16) {
+        return name;
+    }
+
+
+    return (
+        name
+            .replace("Thruster ", "")
+            .replace("Astrox ", "")
+            .slice(0, 16)
+    );
+
+}
+
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 
 }
