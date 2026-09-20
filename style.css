@@ -260,6 +260,10 @@ main {
    RACKET CARDS
 ========================================================= */
 
+/* =========================================================
+   RACKET CARDS
+========================================================= */
+
 .racket-grid {
     display: grid;
 
@@ -295,26 +299,22 @@ main {
         0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
-
-/* =========================
-   RACKET CARD IMAGE
-   ========================= */
-
 .racket-card-image {
-    height: 200px;
+    height: 170px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
-    padding: 20px;
+    padding: 15px;
 
     overflow: hidden;
 }
 
 .racket-card-image img {
-    width: 90%;
-    height: 90%;
+    width: 100%;
+    height: 100%;
 
     object-fit: contain;
     object-position: center;
@@ -369,7 +369,6 @@ main {
 
     font-size: 10px;
 }
-
 
 /* =========================================================
    PAGE HEADER
