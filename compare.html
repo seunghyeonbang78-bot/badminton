@@ -1,688 +1,852 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Compare Rackets | Badminton</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f5f7fa;
-      color: #111827;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    /* =========================
-       HEADER
-    ========================= */
-
-    header {
-      background: #111827;
-      color: white;
-      padding: 18px 30px;
-    }
-
-    .header-inner {
-      max-width: 1250px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      font-size: 22px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    nav {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    nav a {
-      color: #d1d5db;
-      font-size: 14px;
-      font-weight: 600;
-      transition: 0.2s;
-    }
-
-    nav a:hover,
-    nav a.active {
-      color: white;
-    }
-
-    /* =========================
-       PAGE
-    ========================= */
-
-    .compare-page {
-      max-width: 1250px;
-      margin: 0 auto;
-      padding: 45px 20px 80px;
-    }
-
-    .page-header {
-      margin-bottom: 30px;
-    }
-
-    .page-header h1 {
-      margin: 0 0 10px;
-      font-size: 38px;
-      line-height: 1.15;
-    }
-
-    .page-header p {
-      margin: 0;
-      color: #6b7280;
-      font-size: 16px;
-    }
-
-    /* =========================
-       BLOCK
-    ========================= */
-
-    .compare-block {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
-      padding: 26px;
-      margin-bottom: 25px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
-    }
-
-    .compare-block h2 {
-      margin: 0 0 18px;
-      font-size: 23px;
-    }
-
-    /* =========================
-       SEARCH / FILTER
-    ========================= */
-
-    .compare-selector {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .search-box {
-      width: 100%;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 13px 15px;
-      border: 1px solid #d1d5db;
-      border-radius: 10px;
-      font-size: 15px;
-      outline: none;
-    }
-
-    .search-box input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .brand-filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .brand-filter {
-      border: 1px solid #d1d5db;
-      background: white;
-      padding: 9px 15px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      transition: 0.2s;
-    }
-
-    .brand-filter:hover {
-      background: #f3f4f6;
-    }
-
-    .brand-filter.active {
-      background: #111827;
-      color: white;
-      border-color: #111827;
-    }
-
-    /* =========================
-       SELECTOR LIST
-    ========================= */
-
-    .racket-selector-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 12px;
-      margin-top: 5px;
-    }
-
-    .selector-list-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      background: white;
-      cursor: pointer;
-      transition: 0.2s;
-      min-height: 76px;
-    }
-
-    .selector-list-item:hover {
-      border-color: #9ca3af;
-      transform: translateY(-1px);
-    }
-
-    .selector-list-item.selected {
-      border-color: #2563eb;
-      background: #eff6ff;
-    }
-
-    .selector-list-item.disabled {
-      opacity: 0.45;
-    }
-
-    .selector-racket-image {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .selector-racket-info {
-      min-width: 0;
-    }
-
-    .selector-racket-name {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 4px;
-    }
-
-    .selector-racket-brand {
-      font-size: 12px;
-      color: #6b7280;
-    }
-
-    /* =========================
-       SELECTED RACKETS
-    ========================= */
-
-    .selected-rackets {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .selected-racket-card {
-      position: relative;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 15px;
-      background: #fafafa;
-      min-width: 0;
-    }
-
-    .selected-racket-card .remove-button {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 25px;
-      height: 25px;
-      border: 0;
-      border-radius: 50%;
-      background: #e5e7eb;
-      color: #374151;
-      cursor: pointer;
-      font-size: 16px;
-      line-height: 25px;
-    }
-
-    .selected-racket-card .remove-button:hover {
-      background: #d1d5db;
-    }
-
-    .selected-racket-image {
-      display: block;
-      width: 85px;
-      height: 85px;
-      object-fit: contain;
-      margin: 0 auto 10px;
-    }
-
-    .selected-racket-name {
-      text-align: center;
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-
-    .selected-racket-brand {
-      text-align: center;
-      color: #6b7280;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-
-    /* =========================
-       RADAR CHART
-    ========================= */
-
-    .radar-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 220px;
-      gap: 25px;
-      align-items: center;
-    }
-
-    .radar-canvas-wrapper {
-      width: 100%;
-      min-height: 520px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    #radar-chart {
-      display: block;
-      width: 100%;
-      max-width: 700px;
-      height: 520px;
-    }
-
-    .radar-legend {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      border: 1px solid #e5e7eb;
-      border-radius: 10px;
-      background: #fafafa;
-    }
-
-    .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .legend-image {
-      width: 38px;
-      height: 38px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .legend-name {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    /* =========================
-       TABLE
-    ========================= */
-
-    .comparison-table-wrapper {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-    }
-
-    .comparison-table {
-      width: 100%;
-      min-width: 650px;
-      border-collapse: collapse;
-      background: white;
-    }
-
-    .comparison-table th,
-    .comparison-table td {
-      border-bottom: 1px solid #e5e7eb;
-      padding: 13px 15px;
-      text-align: center;
-      vertical-align: middle;
-    }
-
-    .comparison-table tr:last-child th,
-    .comparison-table tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .comparison-table thead th {
-      background: #f9fafb;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .comparison-table thead th:first-child {
-      text-align: left;
-      position: sticky;
-      left: 0;
-      z-index: 3;
-      background: #f9fafb;
-      min-width: 165px;
-    }
-
-    .comparison-table tbody th {
-      text-align: left;
-      font-size: 14px;
-      font-weight: 700;
-      color: #374151;
-      position: sticky;
-      left: 0;
-      z-index: 2;
-      background: white;
-      min-width: 165px;
-    }
-
-    .comparison-table td {
-      min-width: 170px;
-      font-size: 14px;
-    }
-
-    .table-racket-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      min-width: 150px;
-    }
-
-    .table-racket-image {
-      width: 48px;
-      height: 48px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .table-racket-info {
-      text-align: left;
-      min-width: 0;
-    }
-
-    .table-racket-name {
-      font-weight: 700;
-      font-size: 13px;
-      line-height: 1.25;
-      word-break: break-word;
-    }
-
-    .table-racket-brand {
-      color: #6b7280;
-      font-size: 11px;
-      margin-top: 3px;
-    }
-
-    /* Numeric characteristic cells */
-
-    .characteristic-cell {
-      min-width: 170px;
-    }
-
-    .value-number {
-      display: block;
-      font-size: 16px;
-      font-weight: 800;
-      margin-bottom: 7px;
-    }
-
-    .value-bar {
-      width: 100%;
-      height: 7px;
-      background: #e5e7eb;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .value-bar-fill {
-      height: 100%;
-      border-radius: inherit;
-      transition: width 0.25s ease;
-    }
-
-    .spec-value {
-      font-weight: 600;
-      color: #374151;
-      line-height: 1.4;
-    }
-
-    /* =========================
-       EMPTY STATES
-    ========================= */
-
-    .empty-state {
-      padding: 35px 20px;
-      text-align: center;
-      color: #6b7280;
-      border: 1px dashed #d1d5db;
-      border-radius: 12px;
-      background: #fafafa;
-    }
-
-    .empty-state strong {
-      display: block;
-      color: #374151;
-      margin-bottom: 5px;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 900px) {
-      .selected-rackets {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .radar-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .radar-legend {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      #radar-chart {
-        height: 500px;
-      }
-    }
-
-    @media (max-width: 650px) {
-      header {
-        padding: 16px 18px;
-      }
-
-      .header-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      nav {
-        gap: 15px;
-      }
-
-      .compare-page {
-        padding: 30px 12px 60px;
-      }
-
-      .page-header h1 {
-        font-size: 30px;
-      }
-
-      .compare-block {
-        padding: 18px;
-        border-radius: 14px;
-      }
-
-      .selected-rackets {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .radar-canvas-wrapper {
-        min-height: 390px;
-      }
-
-      #radar-chart {
-        height: 390px;
-      }
-
-      .radar-legend {
-        grid-template-columns: 1fr;
-      }
-
-      .comparison-table {
-        min-width: 620px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Compare — RacketLab</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================================
+           COMPARE PAGE ONLY
+           Uses the same visual language as Home / Rackets.
+           This does NOT modify style.css.
+        ========================================================= */
+
+        .compare-page {
+            padding: 0 7% 100px;
+        }
+
+        .compare-section {
+            margin-bottom: 70px;
+        }
+
+        .compare-section-header {
+            margin-bottom: 30px;
+        }
+
+        .compare-section-header h2 {
+            font-size: 32px;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .compare-section-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* Selection area */
+
+        .compare-search {
+            margin-bottom: 18px;
+        }
+
+        .compare-search input {
+            width: 100%;
+            padding: 17px 20px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .compare-search input:focus {
+            border-color: #111;
+        }
+
+        .compare-filters {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .compare-filter {
+            border: 1px solid #ddd;
+            background: white;
+            padding: 9px 17px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #111;
+            transition: .2s;
+        }
+
+        .compare-filter:hover {
+            border-color: #aaa;
+        }
+
+        .compare-filter.active {
+            background: #111;
+            color: white;
+            border-color: #111;
+        }
+
+        .selector-count {
+            color: #777;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .racket-selector-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .selector-list-item {
+            position: relative;
+            display: grid;
+            grid-template-columns: 85px 1fr 30px;
+            align-items: center;
+            gap: 16px;
+            min-height: 120px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e7e7e4;
+            border-radius: 18px;
+            cursor: pointer;
+            transition:
+                transform .2s,
+                box-shadow .2s,
+                border-color .2s;
+        }
+
+        .selector-list-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,.06);
+        }
+
+        .selector-list-item.selected {
+            border-color: #111;
+            box-shadow: 0 8px 25px rgba(0,0,0,.06);
+        }
+
+        .selector-list-item.disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .selector-list-image {
+            width: 85px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f5;
+            border-radius: 12px;
+        }
+
+        .selector-list-image img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        .selector-list-info {
+            min-width: 0;
+        }
+
+        .selector-brand {
+            display: block;
+            color: #888;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .selector-list-info strong {
+            display: block;
+            font-size: 16px;
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+
+        .selector-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .selector-meta span {
+            color: #777;
+            font-size: 11px;
+        }
+
+        .selector-add {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f1ee;
+            color: #111;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .selector-list-item.selected .selector-add {
+            background: #111;
+            color: white;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            padding: 50px 20px;
+            text-align: center;
+            color: #777;
+            border: 1px dashed #ddd;
+            border-radius: 18px;
+            background: white;
+        }
+
+        /* Selected rackets */
+
+        .selected-rackets {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .selected-placeholder {
+            grid-column: 1 / -1;
+            padding: 45px 20px;
+            text-align: center;
+            color: #888;
+            border: 1px dashed #ddd;
+            border-radius: 18px;
+            background: white;
+        }
+
+        .selected-racket-card {
+            position: relative;
+            background: white;
+            border: 1px solid #e7e7e4;
+            border-radius: 18px;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .selected-racket-color {
+            height: 4px;
+            width: 100%;
+        }
+
+        .selected-racket-image {
+            height: 190px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7f7f5;
+        }
+
+        .selected-racket-image img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+
+        .selected-racket-info {
+            padding: 18px;
+        }
+
+        .selected-racket-info span {
+            display: block;
+            color: #888;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .selected-racket-info h3 {
+            font-size: 17px;
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .remove-racket {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 28px;
+            height: 28px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,.95);
+            color: #555;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 28px;
+            padding: 0;
+        }
+
+        .remove-racket:hover {
+            background: #111;
+            color: white;
+        }
+
+        /* Comparison */
+
+        .comparison-area.hidden,
+        .empty-state.hidden {
+            display: none;
+        }
+
+        .comparison-card {
+            background: white;
+            border: 1px solid #e7e7e4;
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 30px;
+        }
+
+        .comparison-card h2 {
+            font-size: 28px;
+            letter-spacing: -1px;
+            margin-bottom: 25px;
+        }
+
+        /* Radar */
+
+        .radar-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 230px;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .radar-canvas-wrapper {
+            width: 100%;
+            min-height: 520px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #radar-chart {
+            width: 100%;
+            max-width: 700px;
+            height: 520px;
+            display: block;
+        }
+
+        .radar-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radar-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border-bottom: 1px solid #e5e5e2;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-image {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .legend-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .legend-name {
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        /* Tables */
+
+        .comparison-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .comparison-table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 15px;
+            border-bottom: 1px solid #e5e5e2;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .comparison-table thead th {
+            font-size: 13px;
+            font-weight: 700;
+            background: #f7f7f5;
+        }
+
+        .comparison-table thead th:first-child,
+        .comparison-table tbody th {
+            text-align: left;
+        }
+
+        .comparison-table tbody th {
+            color: #555;
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 150px;
+        }
+
+        .comparison-table td {
+            min-width: 170px;
+            font-size: 14px;
+        }
+
+        .table-racket-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .table-racket-image {
+            width: 42px;
+            height: 55px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .table-racket-info {
+            text-align: left;
+        }
+
+        .table-racket-name {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.25;
+        }
+
+        .table-racket-brand {
+            color: #888;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .characteristic-cell {
+            min-width: 170px;
+        }
+
+        .value-number {
+            display: block;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .value-bar {
+            width: 100%;
+            height: 5px;
+            background: #e5e5e2;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .value-bar-fill {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        .spec-value {
+            color: #444;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Empty */
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: #777;
+            border: 1px dashed #ddd;
+            border-radius: 18px;
+            background: white;
+            margin-bottom: 30px;
+        }
+
+        .empty-state strong {
+            display: block;
+            color: #111;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 1000px) {
+            .racket-selector-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .selected-rackets {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .radar-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .radar-legend {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+            .compare-page {
+                padding-left: 7%;
+                padding-right: 7%;
+            }
+
+            .racket-selector-list {
+                grid-template-columns: 1fr;
+            }
+
+            .selected-rackets {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .compare-section-header h2 {
+                font-size: 27px;
+            }
+
+            .radar-canvas-wrapper {
+                min-height: 420px;
+            }
+
+            #radar-chart {
+                height: 420px;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .selected-rackets {
+                grid-template-columns: 1fr;
+            }
+
+            .radar-legend {
+                grid-template-columns: 1fr;
+            }
+
+            .selector-list-item {
+                grid-template-columns: 70px 1fr 28px;
+            }
+
+            .selector-list-image {
+                width: 70px;
+                height: 80px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-  <header>
-    <div class="header-inner">
-      <div class="logo">
-        Badminton Rackets
-      </div>
+<header class="navbar">
 
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="rackets.html">Rackets</a>
-        <a href="brands.html">Brands</a>
-        <a href="compare.html" class="active">Compare</a>
-      </nav>
+    <a href="index.html" class="logo">
+        RacketLab
+    </a>
+
+    <nav>
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="rackets.html">
+            Rackets
+        </a>
+
+        <a href="compare.html" class="active">
+            Compare
+        </a>
+
+        <a href="brands.html">
+            Brands
+        </a>
+    </nav>
+
+</header>
+
+
+<main>
+
+    <section class="page-header">
+
+        <p class="eyebrow">
+            RACKET COMPARISON
+        </p>
+
+        <h1>
+            Compare Rackets
+        </h1>
+
+        <p>
+            Compare racket characteristics, performance, and official specifications.
+        </p>
+
+    </section>
+
+
+    <div class="compare-page">
+
+        <!-- SELECT -->
+
+        <section class="compare-section">
+
+            <div class="compare-section-header">
+
+                <h2>
+                    Select Rackets
+                </h2>
+
+                <p>
+                    Choose up to 4 rackets to compare.
+                </p>
+
+            </div>
+
+
+            <div class="compare-search">
+
+                <input
+                    id="racket-search"
+                    type="text"
+                    placeholder="Search racket, brand, or series..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="compare-filters">
+
+                <button
+                    class="compare-filter active"
+                    data-brand="All"
+                >
+                    All
+                </button>
+
+                <button
+                    class="compare-filter"
+                    data-brand="Yonex"
+                >
+                    Yonex
+                </button>
+
+                <button
+                    class="compare-filter"
+                    data-brand="Victor"
+                >
+                    Victor
+                </button>
+
+            </div>
+
+
+            <div
+                id="selection-count"
+                class="selector-count"
+            >
+                0 / 4 selected
+            </div>
+
+
+            <div
+                id="racket-selector-list"
+                class="racket-selector-list"
+            ></div>
+
+        </section>
+
+
+        <!-- SELECTED -->
+
+        <section class="compare-section">
+
+            <div class="compare-section-header">
+
+                <h2>
+                    Selected Rackets
+                </h2>
+
+                <p>
+                    Your selected rackets will appear here.
+                </p>
+
+            </div>
+
+
+            <div
+                id="selected-rackets"
+                class="selected-rackets"
+            ></div>
+
+        </section>
+
+
+        <!-- EMPTY -->
+
+        <div
+            id="selected-empty"
+            class="empty-state"
+        >
+            <strong>
+                Select at least 2 rackets
+            </strong>
+
+            Choose two or more rackets above to see the comparison.
+        </div>
+
+
+        <!-- COMPARISON -->
+
+        <div
+            id="comparison-area"
+            class="comparison-area hidden"
+        >
+
+            <!-- PERFORMANCE -->
+
+            <section class="comparison-card">
+
+                <h2>
+                    Performance Profile
+                </h2>
+
+                <div class="radar-layout">
+
+                    <div class="radar-canvas-wrapper">
+
+                        <canvas
+                            id="radar-chart"
+                            aria-label="Racket performance comparison"
+                        ></canvas>
+
+                    </div>
+
+                    <div
+                        id="radar-legend"
+                        class="radar-legend"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CHARACTERISTICS -->
+
+            <section class="comparison-card">
+
+                <h2>
+                    Characteristics Comparison
+                </h2>
+
+                <div class="comparison-table-wrapper">
+
+                    <table class="comparison-table">
+
+                        <thead>
+                            <tr id="characteristic-head">
+                                <th>
+                                    Characteristic
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="characteristic-body"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- OFFICIAL SPECS -->
+
+            <section class="comparison-card">
+
+                <h2>
+                    Official Specifications
+                </h2>
+
+                <div class="comparison-table-wrapper">
+
+                    <table class="comparison-table">
+
+                        <thead>
+                            <tr id="spec-head">
+                                <th>
+                                    Specification
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="spec-body"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
     </div>
-  </header>
 
-  <main class="compare-page">
+</main>
 
-    <div class="page-header">
-      <h1>Compare Rackets</h1>
-      <p>Compare racket characteristics, performance, and official specifications.</p>
+
+<footer>
+
+    <div class="footer-logo">
+        RacketLab
     </div>
 
-    <!-- =========================
-         SELECT RACKETS
-    ========================= -->
+    <p>
+        Badminton racket database & comparison tool.
+    </p>
 
-    <section class="compare-block">
-      <h2>Select Rackets</h2>
+</footer>
 
-      <div class="compare-selector">
 
-        <div class="search-box">
-          <input
-            id="racket-search"
-            type="text"
-            placeholder="Search racket..."
-            autocomplete="off"
-          >
-        </div>
-
-        <div class="brand-filters">
-          <button class="brand-filter active" data-brand="All">All</button>
-          <button class="brand-filter" data-brand="Yonex">Yonex</button>
-          <button class="brand-filter" data-brand="Victor">Victor</button>
-        </div>
-
-        <div id="racket-selector-list" class="racket-selector-list"></div>
-
-      </div>
-    </section>
-
-    <!-- =========================
-         SELECTED RACKETS
-    ========================= -->
-
-    <section class="compare-block">
-      <h2>Selected Rackets</h2>
-
-      <div id="selected-rackets" class="selected-rackets"></div>
-
-      <div id="selected-empty" class="empty-state">
-        <strong>No rackets selected</strong>
-        Select 2–4 rackets above to compare them.
-      </div>
-    </section>
-
-    <!-- =========================
-         PERFORMANCE PROFILE
-    ========================= -->
-
-    <section class="compare-block">
-      <h2>Performance Profile</h2>
-
-      <div class="radar-layout">
-
-        <div class="radar-canvas-wrapper">
-          <canvas
-            id="radar-chart"
-            aria-label="Racket performance comparison"
-          ></canvas>
-        </div>
-
-        <div id="radar-legend" class="radar-legend"></div>
-
-      </div>
-    </section>
-
-    <!-- =========================
-         CHARACTERISTICS
-    ========================= -->
-
-    <section class="compare-block">
-      <h2>Characteristics Comparison</h2>
-
-      <div id="characteristics-container"></div>
-    </section>
-
-    <!-- =========================
-         OFFICIAL SPECIFICATIONS
-    ========================= -->
-
-    <section class="compare-block">
-      <h2>Official Specifications</h2>
-
-      <div id="specifications-container"></div>
-    </section>
-
-  </main>
-
-  <script type="module" src="js/compare.js"></script>
+<script type="module" src="js/compare.js"></script>
 
 </body>
 </html>
