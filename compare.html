@@ -1,21 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Compare — RacketLab</title>
+    <title>Compare Rackets — RacketLab</title>
 
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
@@ -26,17 +18,10 @@
     </a>
 
     <nav>
-
         <a href="index.html">Home</a>
-
         <a href="rackets.html">Rackets</a>
-
-        <a href="compare.html" class="active">
-            Compare
-        </a>
-
+        <a href="compare.html" class="active">Compare</a>
         <a href="brands.html">Brands</a>
-
     </nav>
 
 </header>
@@ -44,33 +29,192 @@
 
 <main>
 
-    <section class="page-header">
+    <section class="page-header compare-header">
 
-        <p class="eyebrow">
-            COMPARISON
-        </p>
+        <p class="eyebrow">RACKET COMPARISON</p>
 
-        <h1>
-            Compare Rackets
-        </h1>
+        <h1>Compare Rackets.</h1>
 
         <p>
-            Compare the characteristics of different rackets.
+            Select up to four rackets and compare their characteristics,
+            specifications, and playing profiles.
         </p>
 
     </section>
 
 
-    <section class="explorer">
+    <section class="compare-section">
 
-        <div class="not-found">
+        <!-- Racket selector -->
 
-            <h2>
-                Comparison Tool
-            </h2>
+        <div class="compare-selector">
+
+            <div class="selector-header">
+
+                <div>
+                    <h2>Select Rackets</h2>
+
+                    <p>
+                        Choose 2–4 rackets to compare.
+                    </p>
+                </div>
+
+                <span id="selection-count">
+                    0 / 4
+                </span>
+
+            </div>
+
+
+            <div class="racket-selector-grid" id="racket-selector">
+                <!-- JavaScript -->
+            </div>
+
+        </div>
+
+
+        <!-- Selected rackets -->
+
+        <div class="selected-section">
+
+            <div class="compare-section-title">
+
+                <div>
+                    <p class="eyebrow">SELECTED</p>
+                    <h2>Your Rackets</h2>
+                </div>
+
+            </div>
+
+            <div
+                id="selected-rackets"
+                class="selected-rackets"
+            >
+                <!-- JavaScript -->
+            </div>
+
+        </div>
+
+
+        <!-- Comparison -->
+
+        <div
+            id="comparison-area"
+            class="comparison-area hidden"
+        >
+
+            <!-- Radar -->
+
+            <section class="comparison-block">
+
+                <div class="compare-section-title">
+
+                    <div>
+                        <p class="eyebrow">PERFORMANCE PROFILE</p>
+
+                        <h2>Playing Characteristics</h2>
+                    </div>
+
+                </div>
+
+                <div class="radar-container">
+
+                    <svg
+                        id="radar-chart"
+                        viewBox="0 0 600 600"
+                        aria-label="Racket performance comparison chart"
+                    ></svg>
+
+                    <div
+                        id="radar-legend"
+                        class="radar-legend"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Characteristics table -->
+
+            <section class="comparison-block">
+
+                <div class="compare-section-title">
+
+                    <div>
+                        <p class="eyebrow">CHARACTERISTICS</p>
+
+                        <h2>Performance Comparison</h2>
+                    </div>
+
+                </div>
+
+                <div class="comparison-table-wrapper">
+
+                    <table class="comparison-table">
+
+                        <thead id="characteristic-head">
+                        </thead>
+
+                        <tbody id="characteristic-body">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- Official specifications -->
+
+            <section class="comparison-block">
+
+                <div class="compare-section-title">
+
+                    <div>
+                        <p class="eyebrow">OFFICIAL SPECS</p>
+
+                        <h2>Specifications</h2>
+                    </div>
+
+                </div>
+
+                <div class="comparison-table-wrapper">
+
+                    <table class="comparison-table">
+
+                        <thead id="spec-head">
+                        </thead>
+
+                        <tbody id="spec-body">
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- Empty state -->
+
+        <div
+            id="compare-empty"
+            class="compare-empty"
+        >
+
+            <div class="empty-icon">
+                +
+            </div>
+
+            <h2>Start Comparing</h2>
 
             <p>
-                Select rackets from the Rackets page.
+                Select at least two rackets above to see their
+                characteristics and specifications side by side.
             </p>
 
         </div>
@@ -86,7 +230,14 @@
         RacketLab
     </div>
 
+    <p>
+        Badminton racket database & comparison tool.
+    </p>
+
 </footer>
+
+
+<script type="module" src="js/compare.js"></script>
 
 </body>
 </html>
