@@ -863,7 +863,7 @@ main {
 
     flex-direction: column;
 
-    gap: 17px;
+    gap: 10px;
 }
 
 .rating-row {
@@ -882,6 +882,8 @@ main {
 }
 
 .rating-bar {
+    width: 100%;
+
     height: 6px;
 
     background: #e7e7e4;
@@ -891,7 +893,9 @@ main {
     overflow: hidden;
 }
 
-.rating-bar span {
+/* rating fill */
+.rating-bar span,
+.rating-bar div {
     display: block;
 
     height: 100%;
@@ -899,6 +903,8 @@ main {
     background: #111;
 
     border-radius: 20px;
+
+    min-width: 0;
 }
 
 .rating-value {
@@ -908,7 +914,6 @@ main {
 
     color: #666;
 }
-
 
 /* =========================================================
    SPECS
