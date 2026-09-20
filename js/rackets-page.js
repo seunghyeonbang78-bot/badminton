@@ -155,11 +155,11 @@ function renderRackets() {
                     ${racket.model}
                 </h3>
 
-                <p class="racket-meta">
-                    ${racket.balance}
-                    ·
-                    ${racket.shaftStiffness}
-                </p>
+<p class="racket-meta">
+    ${racket.officialSpecs.balance}
+    ·
+    ${racket.officialSpecs.shaftStiffness}
+</p>
 
 
                 <div class="mini-stats">
