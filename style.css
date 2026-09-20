@@ -299,9 +299,13 @@ main {
    RACKET CARD IMAGE
    ========================= */
 
+/* =========================
+   RACKET CARD IMAGE
+   ========================= */
+
 .racket-card-image {
-    height: 220px;
-    padding: 20px;
+    height: 170px;
+    padding: 15px;
 
     display: flex;
     align-items: center;
