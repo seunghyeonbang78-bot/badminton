@@ -43,10 +43,10 @@ const specificationRows = [
 ];
 
 const racketColors = [
-    "#111111",
-    "#555555",
-    "#888888",
-    "#aaaaaa"
+  "#2563eb", // 1st racket - Blue
+  "#dc2626", // 2nd racket - Red
+  "#16a34a", // 3rd racket - Green
+  "#9333ea"  // 4th racket - Purple
 ];
 
 
