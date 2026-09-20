@@ -12,7 +12,7 @@ const ryugaIIPro = {
 
 
     image:
-        "assets/images/victor/ryuga 2 pro-new.png",
+        "assets/images/victor/newryuga2pro.png",
 
 
     category: [
