@@ -295,30 +295,30 @@ main {
         0 12px 30px rgba(0, 0, 0, 0.06);
 }
 
-/* =========================
-   RACKET CARD IMAGE
-   ========================= */
 
 /* =========================
    RACKET CARD IMAGE
    ========================= */
 
 .racket-card-image {
-    height: 170px;
-    padding: 15px;
+    height: 200px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
+    padding: 20px;
+
     overflow: hidden;
 }
 
 .racket-card-image img {
-    width: 100%;
-    height: 100%;
+    width: 90%;
+    height: 90%;
+
     object-fit: contain;
     object-position: center;
+
     display: block;
 }
 
