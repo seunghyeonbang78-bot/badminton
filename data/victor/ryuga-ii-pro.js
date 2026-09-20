@@ -72,8 +72,9 @@ const ryugaIIPro = {
 
 
     description: `
-        여기에 네가 직접 작성하는
-        Ryuga II Pro 설명을 적으면 됩니다.
+        The Victor Thruster Ryuga II Pro delievers a firm, heavy-hitting feel at impact, seamlessly combining powerful weight with sharp, crisp responsiveness.
+        When you smash, the stiff shaft doesn;t flex loosely instead, it builds yp tension and snaps back instantly, giving you a solid crunch where you can feel the shuttlecock compress deeply before launching off the strings.
+        Even on fast drives and deep clears, it trades smooth, flexy comfort for a direct, precise, and rigid pop. The head heavy balance lets you put maximum authority behind every shot, making every hard hit feel exceptionally heavy, solid, and satisfying.
     `,
 
 
