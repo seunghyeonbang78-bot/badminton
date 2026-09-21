@@ -12,7 +12,7 @@ const ryugaIIPro = {
 
 
     image:
-        "assets/images/victor/newryuga2pro.png",
+        "assets/images/victor/ChatGPT Image Sep 20, 2026, 11_16_43 PM.png",
 
 
     category: [
