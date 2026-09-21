@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Brand — RacketLab</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        /* =========================================================
+           BRAND DETAIL PAGE ONLY
+           Does not change the rest of RacketLab.
+        ========================================================= */
+
+        .brand-detail-page {
+            padding: 70px 7% 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+
+        /* BACK LINK */
+
+        .brand-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 55px;
+
+            color: #777;
+            text-decoration: none;
+            font-size: 14px;
+
+            transition:
+                color 0.25s ease,
+                transform 0.25s ease;
+        }
+
+        .brand-back:hover {
+            color: #111;
+            transform: translateX(-4px);
+        }
+
+
+        /* HERO */
+
+        .brand-detail-hero {
+            min-height: 400px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 70px;
+
+            padding: 65px;
+
+            border-radius: 22px;
+
+            background: #f7f7f7;
+
+            overflow: hidden;
+
+            position: relative;
+
+            animation: brandFadeUp 0.7s ease both;
+        }
+
+
+        .brand-detail-content {
+            max-width: 650px;
+            position: relative;
+            z-index: 2;
+        }
+
+
+        .brand-label {
+            display: inline-block;
+
+            margin-bottom: 22px;
+
+            font-size: 12px;
+            font-weight: 600;
+
+            letter-spacing: 2px;
+            text-transform: uppercase;
+
+            color: #888;
+        }
+
+
+        .brand-detail-title {
+            font-size: clamp(55px, 8vw, 105px);
+
+            line-height: 0.9;
+            letter-spacing: -5px;
+
+            margin: 0 0 28px;
+
+            font-weight: 700;
+        }
+
+
+        .brand-detail-tagline {
+            font-size: 20px;
+            line-height: 1.5;
+
+            margin-bottom: 18px;
+
+            color: #333;
+        }
+
+
+        .brand-detail-description {
+            max-width: 600px;
+
+            color: #666;
+
+            font-size: 15px;
+            line-height: 1.8;
+
+            margin-bottom: 35px;
+        }
+
+
+        /* BUTTON */
+
+        .brand-racket-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px;
+
+            padding: 14px 23px;
+
+            border-radius: 10px;
+
+            background: #111;
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 14px;
+            font-weight: 500;
+
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                background 0.25s ease;
+        }
+
+
+        .brand-racket-button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 10px 25px rgba(0, 0, 0, 0.15);
+
+            background: #222;
+        }
+
+
+        .brand-racket-button .arrow {
+            transition: transform 0.25s ease;
+        }
+
+
+        .brand-racket-button:hover .arrow {
+            transform: translateX(4px);
+        }
+
+
+        /* LARGE BACKGROUND BRAND TEXT */
+
+        .brand-background-text {
+            position: absolute;
+
+            right: -20px;
+            bottom: -35px;
+
+            font-size: clamp(90px, 15vw, 230px);
+
+            font-weight: 700;
+            letter-spacing: -10px;
+
+            color: rgba(0, 0, 0, 0.035);
+
+            user-select: none;
+            pointer-events: none;
+
+            white-space: nowrap;
+        }
+
+
+        /* INFORMATION */
+
+        .brand-info-section {
+            margin-top: 90px;
+
+            animation: brandFadeUp 0.7s ease 0.15s both;
+        }
+
+
+        .brand-info-header {
+            margin-bottom: 35px;
+        }
+
+
+        .brand-info-header span {
+            display: block;
+
+            color: #888;
+
+            font-size: 12px;
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 10px;
+        }
+
+
+        .brand-info-header h2 {
+            font-size: 34px;
+            letter-spacing: -1.5px;
+
+            margin: 0;
+        }
+
+
+        /* FACT CARDS */
+
+        .brand-facts {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 18px;
+        }
+
+
+        .brand-fact {
+            padding: 30px;
+
+            background: #f7f7f7;
+
+            border-radius: 16px;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .brand-fact:hover {
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 14px 35px rgba(0, 0, 0, 0.07);
+        }
+
+
+        .brand-fact-label {
+            font-size: 12px;
+
+            color: #999;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1.5px;
+
+            margin-bottom: 12px;
+        }
+
+
+        .brand-fact-value {
+            font-size: 22px;
+
+            font-weight: 600;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        /* BOTTOM CTA */
+
+        .brand-bottom-cta {
+            margin-top: 90px;
+
+            padding: 55px;
+
+            border-radius: 20px;
+
+            background: #111;
+            color: white;
+
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            gap: 30px;
+
+            animation: brandFadeUp 0.7s ease 0.25s both;
+        }
+
+
+        .brand-bottom-cta h2 {
+            margin: 0 0 8px;
+
+            font-size: 30px;
+            letter-spacing: -1px;
+        }
+
+
+        .brand-bottom-cta p {
+            margin: 0;
+
+            color: #aaa;
+            font-size: 14px;
+        }
+
+
+        .brand-bottom-cta .brand-racket-button {
+            background: white;
+            color: #111;
+
+            flex-shrink: 0;
+        }
+
+
+        /* ANIMATION */
+
+        @keyframes brandFadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 800px) {
+
+            .brand-detail-page {
+                padding:
+                    40px 5% 70px;
+            }
+
+
+            .brand-detail-hero {
+                padding: 40px 28px;
+
+                min-height: 420px;
+            }
+
+
+            .brand-detail-title {
+                letter-spacing: -3px;
+            }
+
+
+            .brand-detail-tagline {
+                font-size: 18px;
+            }
+
+
+            .brand-facts {
+                grid-template-columns: 1fr;
+            }
+
+
+            .brand-bottom-cta {
+                flex-direction: column;
+                align-items: flex-start;
+
+                padding: 38px 28px;
+            }
+
+
+            .brand-background-text {
+                right: -10px;
+                bottom: -15px;
+            }
+
+        }
+
+
+        /* Accessibility */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .brand-detail-hero,
+            .brand-info-section,
+            .brand-bottom-cta {
+                animation: none;
+            }
+
+            .brand-fact,
+            .brand-racket-button,
+            .brand-back {
+                transition: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         NAVIGATION
+         Keep this identical to your other pages
+    ========================================================= -->
+
+    <nav>
+
+        <a href="index.html" class="logo">
+            RacketLab
+        </a>
+
+        <div class="nav-links">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="rackets.html">
+                Rackets
+            </a>
+
+            <a href="compare.html">
+                Compare
+            </a>
+
+            <a href="brands.html" class="active">
+                Brands
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================================================
+         BRAND PAGE
+    ========================================================= -->
+
+    <main class="brand-detail-page">
+
+
+        <a
+            href="brands.html"
+            class="brand-back"
+        >
+            ← Back to Brands
+        </a>
+
+
+
+        <!-- HERO -->
+
+        <section class="brand-detail-hero">
+
+            <div class="brand-detail-content">
+
+                <span class="brand-label">
+                    Brand Profile
+                </span>
+
+
+                <h1
+                    id="brandTitle"
+                    class="brand-detail-title"
+                >
+                    Yonex
+                </h1>
+
+
+                <p
+                    id="brandTagline"
+                    class="brand-detail-tagline"
+                >
+                </p>
+
+
+                <p
+                    id="brandDescription"
+                    class="brand-detail-description"
+                >
+                </p>
+
+
+                <a
+                    id="brandRacketButton"
+                    class="brand-racket-button"
+                    href="rackets.html"
+                >
+
+                    <span id="brandButtonText">
+                        View Rackets
+                    </span>
+
+                    <span class="arrow">
+                        →
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            <div
+                id="brandBackgroundText"
+                class="brand-background-text"
+            >
+                YONEX
+            </div>
+
+        </section>
+
+
+
+        <!-- BRAND INFORMATION -->
+
+        <section class="brand-info-section">
+
+            <div class="brand-info-header">
+
+                <span>
+                    About the Brand
+                </span>
+
+                <h2>
+                    Brand Overview
+                </h2>
+
+            </div>
+
+
+            <div class="brand-facts">
+
+
+                <div class="brand-fact">
+
+                    <div class="brand-fact-label">
+                        Founded
+                    </div>
+
+                    <div
+                        id="brandFounded"
+                        class="brand-fact-value"
+                    >
+                    </div>
+
+                </div>
+
+
+
+                <div class="brand-fact">
+
+                    <div class="brand-fact-label">
+                        Origin
+                    </div>
+
+                    <div
+                        id="brandOrigin"
+                        class="brand-fact-value"
+                    >
+                    </div>
+
+                </div>
+
+
+
+                <div class="brand-fact">
+
+                    <div class="brand-fact-label">
+                        Focus
+                    </div>
+
+                    <div
+                        id="brandFocus"
+                        class="brand-fact-value"
+                    >
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- BOTTOM BUTTON -->
+
+        <section class="brand-bottom-cta">
+
+            <div>
+
+                <h2 id="brandBottomTitle">
+                    Explore Yonex Rackets
+                </h2>
+
+                <p>
+                    Browse racket specifications,
+                    characteristics and comparisons.
+                </p>
+
+            </div>
+
+
+            <a
+                id="brandBottomButton"
+                class="brand-racket-button"
+                href="rackets.html"
+            >
+
+                View Rackets
+
+                <span class="arrow">
+                    →
+                </span>
+
+            </a>
+
+        </section>
+
+
+    </main>
+
+
+
+    <script>
+
+        /* =========================================================
+           BRAND DATA
+        ========================================================= */
+
+        const brands = {
+
+            Yonex: {
+
+                name: "Yonex",
+
+                tagline:
+                    "Japanese craftsmanship driven by innovation.",
+
+                description:
+                    "Founded in Japan in 1946, Yonex has grown into one of the most recognized names in badminton. The company began producing badminton rackets in the 1950s and has continued to develop performance-focused racket technologies for players around the world.",
+
+                founded:
+                    "1946",
+
+                origin:
+                    "Japan",
+
+                focus:
+                    "Innovation & Precision",
+
+                racketUrl:
+                    "rackets.html?brand=Yonex"
+
+            },
+
+
+            Victor: {
+
+                name: "Victor",
+
+                tagline:
+                    "Performance equipment built around badminton.",
+
+                description:
+                    "Founded in Taipei in 1968, Victor has developed into a global badminton equipment brand focused on rackets, footwear, apparel and accessories. The company works closely with professional players and badminton organizations while continuing to develop performance-oriented equipment.",
+
+                founded:
+                    "1968",
+
+                origin:
+                    "Taiwan",
+
+                focus:
+                    "Performance & Control",
+
+                racketUrl:
+                    "rackets.html?brand=Victor"
+
+            }
+
+        };
+
+
+
+        /* =========================================================
+           GET BRAND FROM URL
+        ========================================================= */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        let brandName =
+            params.get("brand");
+
+
+        /* Fix capitalization if needed */
+
+        if (brandName) {
+
+            brandName =
+                brandName.charAt(0).toUpperCase()
+                +
+                brandName.slice(1).toLowerCase();
+
+        }
+
+
+        /* Default */
+
+        if (!brands[brandName]) {
+
+            brandName = "Yonex";
+
+        }
+
+
+        const brand =
+            brands[brandName];
+
+
+
+        /* =========================================================
+           UPDATE PAGE
+        ========================================================= */
+
+        document.title =
+            `${brand.name} — RacketLab`;
+
+
+        document.getElementById(
+            "brandTitle"
+        ).textContent =
+            brand.name;
+
+
+        document.getElementById(
+            "brandBackgroundText"
+        ).textContent =
+            brand.name.toUpperCase();
+
+
+        document.getElementById(
+            "brandTagline"
+        ).textContent =
+            brand.tagline;
+
+
+        document.getElementById(
+            "brandDescription"
+        ).textContent =
+            brand.description;
+
+
+        document.getElementById(
+            "brandFounded"
+        ).textContent =
+            brand.founded;
+
+
+        document.getElementById(
+            "brandOrigin"
+        ).textContent =
+            brand.origin;
+
+
+        document.getElementById(
+            "brandFocus"
+        ).textContent =
+            brand.focus;
+
+
+        document.getElementById(
+            "brandButtonText"
+        ).textContent =
+            `View ${brand.name} Rackets`;
+
+
+        document.getElementById(
+            "brandRacketButton"
+        ).href =
+            brand.racketUrl;
+
+
+        document.getElementById(
+            "brandBottomButton"
+        ).href =
+            brand.racketUrl;
+
+
+        document.getElementById(
+            "brandBottomTitle"
+        ).textContent =
+            `Explore ${brand.name} Rackets`;
+
+    </script>
+
+
+</body>
+
+</html>
