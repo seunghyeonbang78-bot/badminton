@@ -1016,3 +1016,83 @@ footer {
     }
 
 }
+/* =========================================================
+   RACKETLAB — SUBTLE ANIMATIONS
+========================================================= */
+
+@keyframes pageFadeUp {
+
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* Page entrance */
+
+main {
+    animation: pageFadeUp 0.55s ease both;
+}
+
+
+/* Cards */
+
+.racket-card,
+.brand-card,
+.comparison-card {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+
+.racket-card:hover,
+.brand-card:hover,
+.comparison-card:hover {
+    transform: translateY(-5px);
+}
+
+
+/* Buttons */
+
+button,
+.btn,
+.primary-button {
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+
+button:hover,
+.btn:hover,
+.primary-button:hover {
+    transform: translateY(-2px);
+}
+
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+
+    main {
+        animation: none;
+    }
+
+    .racket-card,
+    .brand-card,
+    .comparison-card,
+    button,
+    .btn,
+    .primary-button {
+        transition: none;
+    }
+
+}
