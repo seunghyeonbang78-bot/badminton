@@ -12,7 +12,7 @@ const auraspeed99 = {
 
 
     image:
-        "assets/images/victor/ChatGPT Image Sep 20, 2026, 11_31_29 PM.png",
+        "assets/images/victor/Auraspeed99.png",
 
 
     category: [
