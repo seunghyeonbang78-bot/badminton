@@ -12,7 +12,7 @@ const kfcUltraCX = {
 
 
     image:
-        "assets/images/victor/kfc-ultra-cx.jpg",
+        "assets/images/victor/KFCultaCX.png",
 
 
     category: [
