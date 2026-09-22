@@ -12,7 +12,7 @@ const ryugaMetallic = {
 
 
     image:
-        "assets/images/victor/ryuga-metallic.jpg",
+        "assets/images/victor/ryugametallic.png",
 
 
     category: [
