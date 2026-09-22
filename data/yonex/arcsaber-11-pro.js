@@ -12,7 +12,7 @@ const arcsaber11Pro = {
 
 
     image:
-        "assets/images/yonex/arcsaber-11-pro.jpg",
+        "assets/images/yonex/arcsaber11pro.png",
 
 
     category: [
