@@ -12,7 +12,7 @@ const nanoflare1000Z = {
 
 
     image:
-        "assets/images/yonex/nanoflare-1000z.jpg",
+        "assets/images/yonex/nanoflare1000z.png",
 
 
     category: [
